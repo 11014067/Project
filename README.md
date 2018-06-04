@@ -29,5 +29,5 @@ The calander is going to be hard because I have to test how the data loads and h
 
 ## Requirements
 * Story: you want to move to the states, which state is best. Which has the least homelessness and the best payout?
-* 3 linked interactions: the two bottem visualisations change according to your choice if you click a country the weather will be shown on the bottem left. And according to what you see on the map (income, cost of living and homelessness) it compaires that on the bottem right for two states.
+* 3 linked interactions: the two bottem visualisations change according to your choice if you click a country the weather will be shown on the bottem left and it will be state 1 on the bottem right to compair it to another state. As well as according to what you see on the map (income, cost of living and homelessness) it compaires that on the bottem right for two states.
 * 2 interactive components: you can chose want you want to see (income, cost of living and homelessness) and you can chose which two states you want to compair.
