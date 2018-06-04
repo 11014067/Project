@@ -1,6 +1,6 @@
 # Project
 
-![](doc/programming project.png)
+![](doc/image.png)
 
 ## Data sources:
 * The cost of living index
