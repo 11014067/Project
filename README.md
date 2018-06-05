@@ -6,8 +6,14 @@
 * The cost of living, goceries, housing and health index
 https://www.missourieconomy.org/indicators/cost_of_living/
 
-* Median income
-http://time.com/money/5177566/average-income-every-state-real-value/
+* Median income 2011-2015
+https://en.wikipedia.org/wiki/List_of_U.S._states_by_income
+
+* Gross domestic product 2011-2015
+https://www.bea.gov/iTable/iTable.cfm?reqid=70&step=10&isuri=1&7003=200&7035=-1&7004=sic&7005=1&7006=xx&7036=-1&7001=1200&7002=1&7090=70&7007=-1&7093=levels#reqid=70&step=10&isuri=1&7003=200&7004=naics&7035=-1&7005=1&7006=xx&7001=1200&7036=-1&7002=1&7090=70&7007=-1&7093=levels
+
+* Amount of citizens 2011-2015
+https://www.census.gov/data/tables/2016/demo/popest/state-total.html
 
 * Weather: https://www.ncdc.noaa.gov/cdo-web/webservices/v2#datasets
 Or https://www.usclimatedata.com/ 
