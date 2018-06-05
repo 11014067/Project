@@ -3,15 +3,11 @@
 ![](doc/image.png)
 
 ## Data sources:
-* The cost of living index
+* The cost of living, goceries, housing and health index
 https://www.missourieconomy.org/indicators/cost_of_living/
 
 * Median income
 http://time.com/money/5177566/average-income-every-state-real-value/
-
-* Homelessness
-https://www.usich.gov/tools-for-action/map/#fn[]=1500&fn[]=2900&fn[]=6100&fn[]=10100&fn[]=14100
-per citizen: https://en.wikipedia.org/wiki/List_of_U.S._states_and_territories_by_population
 
 * Weather: https://www.ncdc.noaa.gov/cdo-web/webservices/v2#datasets
 Or https://www.usclimatedata.com/ 
