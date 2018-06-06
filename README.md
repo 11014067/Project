@@ -3,7 +3,7 @@
 ![](doc/image.png)
 
 ## Data sources:
-* The cost of living, goceries, housing and health index
+* The cost of living, groceries, housing and health index
 https://www.missourieconomy.org/indicators/cost_of_living/
 
 * Median income 2011-2015
@@ -22,13 +22,13 @@ Or https://www.usclimatedata.com/
 I think all this can be done with basic d3 and if necessary some help from d3-tip.
 
 ## Similar visualizations:
-* Weather calander: http://bl.ocks.org/KathyZ/c2d4694c953419e0509b
-* Usa map:  https://bl.ocks.org/mbostock/2206590 
+* Weather calendar: http://bl.ocks.org/KathyZ/c2d4694c953419e0509b
+* USA map:  https://bl.ocks.org/mbostock/2206590 
 
-## Dificulties:
-The calander is going to be the most dificult, because I have to test how the data loads and how I can make it in to the calander. If the calander give a lot of problems I will look for other datasets.
+## Difficulties:
+The calendar is going to be the most difficult, because I have to test how the data loads and how I can make it in to the calendar. If the calendar give a lot of problems I will look for other datasets. If the visualization goes well I want to enable an option to compare states on the bottom right.
 
 ## Requirements
 * Story: A lot of people migrate these days, what if you want to move to the states? This tool will help you choose which state fits you best.
-* 3 linked interactions: the two bottem visualisations change according to your choice of state. The weather of the choosen state will be shown on the bottem left and some indices about costs of living will show in the bottem right. 
+* 3 linked interactions: the two bottom visualizations change according to your choice of state. The weather of the choose state will be shown on the bottom left and some indices about costs of living will show in the bottom right. 
 * 2 interactive components: you can chose want you want to see (GDP, income and population) and you can slide a time bar from 2011 up till 2015.
