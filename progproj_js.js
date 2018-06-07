@@ -33,7 +33,7 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 	dataGDP = ppGDP;
 	dataIncome = ppIncome;
 	dataIndices = ppIndices;
-	dataPopulation = ppPopultion;
+	dataPopulation = ppPopulation;
 	DrawMap()
 }
 
