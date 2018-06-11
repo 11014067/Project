@@ -58,7 +58,7 @@ function DrawMap() {
 		// .attr("width", width)
 		// .attr("height", height)
 		// .on("click", clicked);
-
+	print("hi");
 
 	var svg = d3.select("svg");
 
