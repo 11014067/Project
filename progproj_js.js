@@ -59,9 +59,8 @@ function DrawMap() {
 		// .attr("height", height)
 		// .on("click", clicked);
 
-	// var g = svg.append("g");
 
-	// var svg = d3.select("svg");
+	var svg = d3.select("svg");
 
 	var path = d3.geoPath();
 
