@@ -38,11 +38,13 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 }
 
 function DrawMap() {
-	var svg = d3.select("#USMap").append("svg");
+	var width = 1000
+	var height = 1000
+	var svg = d3.select("#USMap").append("svg").attr("width", width).attr("height", height);
 
 	var path = d3.geoPath();
 
-	d3.json("//d3js.org/us-10m.v1.json", function(error, us) {
+	d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
 		if (error) throw error;
 
 	svg.append("g")
