@@ -38,7 +38,7 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 }
 
 function DrawMap() {
-	var svg = d3.select(.USMap).append("svg");
+	var svg = d3.select("#USMap").append("svg");
 
 	var path = d3.geoPath();
 
