@@ -38,27 +38,6 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 }
 
 function DrawMap() {
-	// var width = 960,
-		// height = 500,
-		// centered;
-
-	// var projection = d3.geo.albersUsa()
-		// .scale(1070)
-		// .translate([width / 2, height / 2]);
-
-	// var path = d3.geo.path()
-		// .projection(projection);
-
-	// var svg = d3.select("body").append("svg")
-		// .attr("width", width)
-		// .attr("height", height);
-
-	// svg.append("rect")
-		// .attr("class", "background")
-		// .attr("width", width)
-		// .attr("height", height)
-		// .on("click", clicked);
-
 	var svg = d3.select(".USMap").append("svg");
 
 	var path = d3.geoPath();
