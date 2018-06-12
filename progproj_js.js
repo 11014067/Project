@@ -12,7 +12,7 @@
 /**
 * Make some global variables 
 **/
-var dataGDP, dataIncome, dataIndices, dataPopulation;
+var dataGDP, dataIncome, dataIndices, dataPopulation, dataStates;
 
 /**
 * Load data
@@ -25,15 +25,20 @@ function LoadData() {
 		.defer(d3.csv, "data/progproj_income.csv")
 		.defer(d3.csv, "data/progproj_indices.csv")
 		.defer(d3.csv, "data/progproj_population.csv")
+		.defer(d3.csv, "data/progproj_States.csv")
 		.await(CheckData);
 }
 
-function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
+function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates) {
 	if (error) throw error;
 	dataGDP = ppGDP;
 	dataIncome = ppIncome;
 	dataIndices = ppIndices;
+	ppPopulation.forEach( function(d){
+		d["2015"] = +d["2015"]
+	});
 	dataPopulation = ppPopulation;
+	dataStates = ppStates;
 	DrawMap()
 	DrawCalander()
 	DrawBarGraph()
@@ -41,18 +46,23 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 
 function DrawMap() {
 	var width = 1000
-	var height = 1000
+	var height = 650
 	var svg = d3.select("#USMap")
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
-	var path = d3.geoPath();
-	var StateNames
-	d3.csv("/data/progproj_States.csv", function(error, States){
-		if (error) throw error;
-		console.log(States);
-		StateNames = States;
-	})
+	var path = d3.geoPath();	
+	
+	
+	// get the colour scale
+	var colour = d3.scaleLinear()
+		.domain([0, d3.max(dataPopulation, function (d) { 
+			return Math.round(d["2015"]/10000)*10000; 
+			})])
+		.range(["#D5E2EF", "#08519C"]);
+	
+	console.log(dataPopulation);
+	
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
@@ -65,15 +75,15 @@ function DrawMap() {
 				.append("path")
 				.attr("d", path)
 				.attr("id", function(d) {
-					var name
-					for i=0; i<StateNames.length; i++{ 
-						if d.id == StateNames.Number[i]{
-							name = StateNames[i].Name
+					var IDName = "NULL";
+					for (i=0; i<dataStates.length; i++) { 
+						if (d.id == dataStates[i].StateNumber) {
+							IDName = dataStates[i].StateName
 						}
 					}
-					return name 
-				});
-				return d.id })
+					return IDName 
+				})
+				.style("fill", function(d) { return colour(dataPopulation["2015"][d.StateName]); });
 
 		svg.append("path")
 			.attr("class", "state-borders")
@@ -100,7 +110,7 @@ function DrawCalander(){
         format = d3.timeFormat("%Y-%m-%d");
 
     var svg = d3.select("#Calander").selectAll("svg")
-        .data(d3.range(2008, 2011))
+        .data(d3.range(2016, 2017))
 		.enter().append("svg")
 			.attr("width", width)
 			.attr("height", height)
@@ -155,12 +165,12 @@ function DrawCalander(){
 
 
     //  Tooltip Object
-    var tooltip = d3.select("body")
-      .append("div").attr("id", "tooltip")
-      .style("position", "absolute")
-      .style("z-index", "10")
-      .style("visibility", "hidden")
-      .text("a simple tooltip");
+    // var tooltip = d3.select("body")
+      // .append("div").attr("id", "tooltip")
+      // .style("position", "absolute")
+      // .style("z-index", "10")
+      // .style("visibility", "hidden")
+      // .text("a simple tooltip");
 
     // d3.csv("dji.csv", function(error, csv) {
       // var data = d3.nest()
