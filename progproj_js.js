@@ -35,14 +35,19 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation) {
 	dataIndices = ppIndices;
 	dataPopulation = ppPopulation;
 	DrawMap()
+	DrawCalander()
+	DrawBarGraph()
 }
 
 function DrawMap() {
 	var width = 1000
 	var height = 1000
-	var svg = d3.select("#USMap").append("svg").attr("width", width).attr("height", height);
-
+	var svg = d3.select("#USMap")
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height);
 	var path = d3.geoPath();
+	var StateNames = d3.
 
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, us) {
 		if (error) throw error;
@@ -69,7 +74,15 @@ function DrawMap() {
 	
 }
 
-// function DrawCalander(){
+function DrawCalander(){
+	
+}
+
+function DrawBarGraph(){
+	
+}
+
+
 	// var d3.tsv("us-state-names.tsv", function(tsv){
     //// extract just the names and Ids
     // var names = {};
@@ -77,4 +90,3 @@ function DrawMap() {
       // names[d.id] = d.name;
     // });
 	
-// }
