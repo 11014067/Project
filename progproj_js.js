@@ -35,6 +35,10 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates) {
 	dataIncome = ppIncome;
 	dataIndices = ppIndices;
 	ppPopulation.forEach( function(d){
+		d["2011"] = +d["2011"]
+		d["2012"] = +d["2012"]
+		d["2013"] = +d["2013"]
+		d["2014"] = +d["2014"]
 		d["2015"] = +d["2015"]
 	});
 	dataPopulation = ppPopulation;
