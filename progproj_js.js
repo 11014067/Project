@@ -63,13 +63,13 @@ function DrawMap() {
 	
 }
 
-function DrawCalander(){
-	var 
-	  d3.tsv("us-state-names.tsv", function(tsv){
-    // extract just the names and Ids
-    var names = {};
-    tsv.forEach(function(d,i){
-      names[d.id] = d.name;
-    });
+// function DrawCalander(){
+	// var 
+	  // d3.tsv("us-state-names.tsv", function(tsv){
+    //// extract just the names and Ids
+    // var names = {};
+    // tsv.forEach(function(d,i){
+      // names[d.id] = d.name;
+    // });
 	
-}
+// }
