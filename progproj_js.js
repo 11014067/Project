@@ -51,12 +51,13 @@ function DrawMap() {
 		.attr("class", "states")
 		.selectAll("path")
 		.data(topojson.feature(us, us.objects.states).features)
-		.enter().append("path")
-		.attr("d", path);
+		.enter()
+			.append("path")
+			.attr("d", path)
+			.attr("id", function(d) { return d.id };
 
 	svg.append("path")
 		.attr("class", "state-borders")
-		.attr("id", function(d) { return d.id }
 		.attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
 	});
 	
