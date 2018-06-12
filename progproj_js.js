@@ -47,7 +47,12 @@ function DrawMap() {
 		.attr("width", width)
 		.attr("height", height);
 	var path = d3.geoPath();
-	//var StateNames
+	var StateNames
+	d3.text("https://www2.census.gov/geo/docs/reference/state.txt", function(error, StateTXT){
+		if (error) throw error;
+		console.log(StateTXT);
+		StateNames = StateTXT;
+	})
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
@@ -83,36 +88,32 @@ function DrawCalander(){
     var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
     var shift_up = cellSize * 3;
 
-    var day = d3.time.format("%w"), // day of the week
-        day_of_month = d3.time.format("%e") // day of the month
-        day_of_year = d3.time.format("%j")
-        week = d3.time.format("%U"), // week number of the year
-        month = d3.time.format("%m"), // month number
-        year = d3.time.format("%Y"),
+    var day = d3.timeFormat("%w"), // day of the week
+        day_of_month = d3.timeFormat("%e") // day of the month
+        day_of_year = d3.timeFormat("%j")
+        week = d3.timeFormat("%U"), // week number of the year
+        month = d3.timeFormat("%m"), // month number
+        year = d3.timeFormat("%Y"),
         percent = d3.format(".1%"),
-        format = d3.time.format("%Y-%m-%d");
-
-    var color = d3.scale.quantize()
-        .domain([-.05, .05])
-        .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+        format = d3.timeFormat("%Y-%m-%d");
 
     var svg = d3.select("#Calander").selectAll("svg")
         .data(d3.range(2008, 2011))
-      .enter().append("svg")
-        .attr("width", width)
-        .attr("height", height)
-        .attr("class", "RdYlGn")
-      .append("g")
+		.enter().append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.attr("class", "RdYlGn")
+		.append("g")
 
     var rect = svg.selectAll(".day")
         .data(function(d) { 
-          return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1));
+          return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
-      .enter().append("rect")
-        .attr("class", "day")
-        .attr("width", cellSize)
-        .attr("height", cellSize)
-        .attr("x", function(d) {
+		.enter().append("rect")
+			.attr("class", "day")
+			.attr("width", cellSize)
+			.attr("height", cellSize)
+			.attr("x", function(d) {
           var month_padding = 1.2 * cellSize*7 * ((month(d)-1) % (no_months_in_a_row));
           return day(d) * cellSize + month_padding; 
         })
@@ -125,9 +126,9 @@ function DrawCalander(){
 
     var month_titles = svg.selectAll(".month-title")  // Jan, Feb, Mar and the whatnot
           .data(function(d) { 
-            return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+            return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
         .enter().append("text")
-          .text(monthTitle)
+          .text("monthTitle")
           .attr("x", function(d, i) {
             var month_padding = 1.2 * cellSize*7* ((month(d)-1) % (no_months_in_a_row));
             return month_padding;
@@ -138,17 +139,17 @@ function DrawCalander(){
             return (week_diff*cellSize) + row_level*cellSize*8 - cellSize - shift_up;
           })
           .attr("class", "month-title")
-          .attr("d", monthTitle);
+          .attr("d", "monthTitle");
 
     var year_titles = svg.selectAll(".year-title")  // Jan, Feb, Mar and the whatnot
           .data(function(d) { 
-            return d3.time.years(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+            return d3.timeYears(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
         .enter().append("text")
-          .text(yearTitle)
+          .text("yearTitle")
           .attr("x", function(d, i) { return width/2 - 100; })
           .attr("y", function(d, i) { return cellSize*5.5 - shift_up; })
           .attr("class", "year-title")
-          .attr("d", yearTitle);
+          .attr("d", "yearTitle");
 
 
     //  Tooltip Object
@@ -219,47 +220,47 @@ function DrawBarGraph(){
 		return {'x1':0,'y1':0,'x2':0,'y2':480};
 		});
 
-	var xscale = d3.scale.linear()
+	var xscale = d3.scaleLinear()
 		.domain([10,250])
 		.range([0,722]);
 
-	var yscale = d3.scale.linear()
+	var yscale = d3.scaleLinear()
 		.domain([0,categories.length])
 		.range([0,480]);
 
-	var	xAxis = d3.svg.axis();
-		xAxis.orient('bottom')
-			.scale(xscale)
-			.tickValues(tickVals);
+	// var	xAxis = d3.svg.axis();
+		// xAxis.orient('bottom')
+			// .scale(xscale)
+			// .tickValues(tickVals);
 
-	var	yAxis = d3.svg.axis();
-		yAxis.orient('left')
-			.scale(yscale)
-			.tickSize(2)
-			.tickFormat(function(d,i){ return categories[i]; })
-			.tickValues(d3.range(17));
+	// var	yAxis = d3.svg.axis();
+		// yAxis.orient('left')
+			// .scale(yscale)
+			// .tickSize(2)
+			// .tickFormat(function(d,i){ return categories[i]; })
+			// .tickValues(d3.range(17));
 
-	var y_xis = canvas.append('g')
-		.attr("transform", "translate(150,0)")
-		.attr('id','yaxis')
-		.call(yAxis);
+	// var y_xis = canvas.append('g')
+		// .attr("transform", "translate(150,0)")
+		// .attr('id','yaxis')
+		// .call(yAxis);
 
-	var x_xis = canvas.append('g')
-		.attr("transform", "translate(150,480)")
-		.attr('id','xaxis')
-		.call(xAxis);
+	// var x_xis = canvas.append('g')
+		// .attr("transform", "translate(150,480)")
+		// .attr('id','xaxis')
+		// .call(xAxis);
 
-	var chart = canvas.append('g')
-		.attr("transform", "translate(150,0)")
-		.attr('id','bars')
-		.selectAll('rect')
-		.data(dollars)
-		.enter()
-		.append('rect')
-		.attr('height',19)
-		.attr({'x':0,'y':function(d,i){ return yscale(i)+19; }})
-		.style('fill',function(d,i){ return colorScale(i); })
-		.attr('width',function(d){ return 0; });
+	// var chart = canvas.append('g')
+		// .attr("transform", "translate(150,0)")
+		// .attr('id','bars')
+		// .selectAll('rect')
+		// .data(dollars)
+		// .enter()
+		// .append('rect')
+		// .attr('height',19)
+		// .attr({'x':0,'y':function(d,i){ return yscale(i)+19; }})
+		// .style('fill',function(d,i){ return colorScale(i); })
+		// .attr('width',function(d){ return 0; });
 }
 
 
