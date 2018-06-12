@@ -54,7 +54,7 @@ function DrawMap() {
 		.enter()
 			.append("path")
 			.attr("d", path)
-			.attr("id", function(d) { return d.id };
+			.attr("id", function(d) { return d.id });
 
 	svg.append("path")
 		.attr("class", "state-borders")
