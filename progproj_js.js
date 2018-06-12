@@ -56,6 +56,19 @@ function DrawMap() {
 
 	svg.append("path")
 		.attr("class", "state-borders")
+		.attr("id", function(d) { return d.id }
 		.attr("d", path(topojson.mesh(us, us.objects.states, function(a, b) { return a !== b; })));
 	});
+	
+}
+
+function DrawCalander(){
+	var 
+	  d3.tsv("us-state-names.tsv", function(tsv){
+    // extract just the names and Ids
+    var names = {};
+    tsv.forEach(function(d,i){
+      names[d.id] = d.name;
+    });
+	
 }
