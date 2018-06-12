@@ -47,8 +47,8 @@ function DrawMap() {
 		.attr("width", width)
 		.attr("height", height);
 	var path = d3.geoPath();
-	var StateNames = d3.
-
+	//var StateNames
+	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
 
