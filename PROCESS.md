@@ -14,3 +14,7 @@ Started by trying to make a HTTP server on my computer again to show me my data 
 We had the presentations and I learned a lot off new things like BS grid and colorbrewer so I looked at those and worked on my map again.
 
 # Day 6 (11-6)
+I made a state map, but the state names would not link to the states.
+
+# Day 7
+Finaly found a way to link the names to the states, working on the barchart and starting the calander.
