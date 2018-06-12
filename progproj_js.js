@@ -60,12 +60,13 @@ function DrawMap() {
 				.append("path")
 				.attr("d", path)
 				.attr("id", function(d) {
-					var name
-					for lengthtxt{ 
-						if d.id == txt.id[i]
-							name = txt[i].name
-					}
-					return name });
+					// var name
+					// for lengthtxt{ 
+						// if d.id == txt.id[i]
+							// name = txt[i].name
+					// }
+					// return name });
+				return d.id })
 
 		svg.append("path")
 			.attr("class", "state-borders")
