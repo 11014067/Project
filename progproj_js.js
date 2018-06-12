@@ -48,10 +48,10 @@ function DrawMap() {
 		.attr("height", height);
 	var path = d3.geoPath();
 	var StateNames
-	d3.text("https://www2.census.gov/geo/docs/reference/state.txt", function(error, StateTXT){
+	d3.csv("/data/progproj_States.csv", function(error, States){
 		if (error) throw error;
-		console.log(StateTXT);
-		StateNames = StateTXT;
+		console.log(States);
+		StateNames = States;
 	})
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
