@@ -65,12 +65,14 @@ function DrawMap() {
 				.append("path")
 				.attr("d", path)
 				.attr("id", function(d) {
-					// var name
-					// for i=0; i<txt.length; i++{ 
-						// if d.id == txt.id[i]
-							// name = txt[i].name
-					// }
-					// return name });
+					var name
+					for i=0; i<StateNames.length; i++{ 
+						if d.id == StateNames.Number[i]{
+							name = StateNames[i].Name
+						}
+					}
+					return name 
+				});
 				return d.id })
 
 		svg.append("path")
