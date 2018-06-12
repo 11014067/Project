@@ -13,6 +13,7 @@
 * Make some global variables 
 **/
 var dataGDP, dataIncome, dataIndices, dataPopulation, dataStates;
+var Temp2015 = [];
 
 /**
 * Load data
@@ -35,12 +36,15 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates) {
 	dataIncome = ppIncome;
 	dataIndices = ppIndices;
 	ppPopulation.forEach( function(d){
-		d.StateName = d.StateName
+		d.StateName = d[""]
 		d["2011"] = +d["2011"]
 		d["2012"] = +d["2012"]
 		d["2013"] = +d["2013"]
 		d["2014"] = +d["2014"]
 		d["2015"] = +d["2015"]
+		Object2015 = {}
+		Object2015[d.StateName] = d["2015"]
+		Temp2015.push(Object2015)
 	});
 	dataPopulation = ppPopulation;
 	dataStates = ppStates;
@@ -61,12 +65,12 @@ function DrawMap() {
 	
 	// get the colour scale
 	var colour = d3.scaleLinear()
-		.domain([0, d3.max(dataPopulation, function (d) { 
-			return Math.round(d["2015"]/10000)*10000; 
+		.domain([0, d3.max(Temp2015, function (d) { 
+			return Math.round(d.Population/10000)*10000; 
 			})])
 		.range(["#D5E2EF", "#08519C"]);
 	
-	console.log(dataPopulation);
+	console.log(Temp2015);
 	
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
@@ -88,7 +92,7 @@ function DrawMap() {
 					}
 					return IDName 
 				})
-				.style("fill", function(d) { return colour(dataPopulation["2015"][d.StateName]); });
+				.style("fill", function(d) { return colour(Temp2015.Names[d.StateName]); });
 
 		svg.append("path")
 			.attr("class", "state-borders")
