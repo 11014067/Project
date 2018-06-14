@@ -12,7 +12,7 @@
 /**
 * Make some global variables 
 **/
-var dataGDP, dataIncome, dataIndices, dataPopulation, dataStates;
+var dataGDP, dataIncome, dataIndices, dataPopulation, dataStates, dataTexas;
 var Temp2015 = [];
 
 /**
@@ -27,33 +27,38 @@ function LoadData() {
 		.defer(d3.csv, "data/progproj_indices.csv")
 		.defer(d3.csv, "data/progproj_population.csv")
 		.defer(d3.csv, "data/progproj_States.csv")
+		.defer(d3.csv, "data/progproj_Texas.csv")
 		.await(CheckData);
 }
 
-function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates) {
+function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, ppTexas) {
+
 	if (error) throw error;
 	dataGDP = ppGDP;
 	dataIncome = ppIncome;
 	dataIndices = ppIndices;
 	ppPopulation.forEach( function(d){
-		d.StateName = d[""]
-		d["2011"] = +d["2011"]
-		d["2012"] = +d["2012"]
+		d["2010"] = +d["2010"] 
+		d["2011"] = +d["2011"] 
+		d["2012"] = +d["2012"] 
 		d["2013"] = +d["2013"]
 		d["2014"] = +d["2014"]
 		d["2015"] = +d["2015"]
-		Object2015 = {}
-		Object2015[d.StateName] = d["2015"]
-		Temp2015.push(Object2015)
+		d["2016"] = +d["2016"]
+		Temp2015[d.StateName] = d["2015"]
 	});
 	dataPopulation = ppPopulation;
 	dataStates = ppStates;
-	DrawMap()
-	DrawCalander()
-	DrawBarGraph()
+	dataTexas = ppTexas;
+	DrawMap(dataPopulation)
+	DrawCalander("Texas")
+	DrawBarGraph("Texas")
 }
 
-function DrawMap() {
+function DrawMap(shownData) {
+	var year = document.getElementById("myYear")
+	var standardYear = "2015"
+	
 	var width = 1000
 	var height = 650
 	var svg = d3.select("#USMap")
@@ -65,17 +70,14 @@ function DrawMap() {
 	
 	// get the colour scale
 	var colour = d3.scaleLinear()
-		.domain([0, d3.max(Temp2015, function (d) { 
-			return Math.round(d.Population/10000)*10000; 
-			})])
+		.domain([0, d3.max(shownData, function (d, i) { 
+			return Math.round(shownData[i][standardYear]/1000)*1000; 
+		})])
 		.range(["#D5E2EF", "#08519C"]);
-	
-	console.log(Temp2015);
-	
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
-
+		
 		svg.append("g")
 			.attr("class", "states")
 			.selectAll("path")
@@ -92,7 +94,7 @@ function DrawMap() {
 					}
 					return IDName 
 				})
-				.style("fill", function(d) { return colour(Temp2015.Names[d.StateName]); });
+				.style("fill", function(d) { return colour(Temp2015[this.id]); });
 
 		svg.append("path")
 			.attr("class", "state-borders")
@@ -101,13 +103,16 @@ function DrawMap() {
 	
 }
 
-function DrawCalander(){
-	var width = 960,
-        height = 750,
-        cellSize = 25; // cell size
+function DrawCalander(stateName){
+	var width = 500,
+        height = 650,
+        cellSize = 15; // cell size
 
     var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
     var shift_up = cellSize * 3;
+	var colourScale = d3.scaleLinear()
+		.domain([-10, 40])
+		.range(["#2a02d8", "#D80404"])
 
     var day = d3.timeFormat("%w"), // day of the week
         day_of_month = d3.timeFormat("%e") // day of the month
@@ -115,11 +120,10 @@ function DrawCalander(){
         week = d3.timeFormat("%U"), // week number of the year
         month = d3.timeFormat("%m"), // month number
         year = d3.timeFormat("%Y"),
-        percent = d3.format(".1%"),
         format = d3.timeFormat("%Y-%m-%d");
 
     var svg = d3.select("#Calander").selectAll("svg")
-        .data(d3.range(2016, 2017))
+        .data(d3.range(2017, 2018))
 		.enter().append("svg")
 			.attr("width", width)
 			.attr("height", height)
@@ -132,163 +136,133 @@ function DrawCalander(){
         })
 		.enter().append("rect")
 			.attr("class", "day")
+			.attr("id", function(d,i) { return i; })
 			.attr("width", cellSize)
 			.attr("height", cellSize)
 			.attr("x", function(d) {
-          var month_padding = 1.2 * cellSize*7 * ((month(d)-1) % (no_months_in_a_row));
-          return day(d) * cellSize + month_padding; 
-        })
-        .attr("y", function(d) { 
-          var week_diff = week(d) - week(new Date(year(d), month(d)-1, 1) );
-          var row_level = Math.ceil(month(d) / (no_months_in_a_row));
-          return (week_diff*cellSize) + row_level*cellSize*8 - cellSize/2 - shift_up;
-        })
-        .datum(format);
+				var month_padding = 1.2 * cellSize*7 * ((month(d)-1) % (no_months_in_a_row));
+				return day(d) * cellSize + month_padding; 
+				})
+			.attr("y", function(d) { 
+				var week_diff = week(d) - week(new Date(year(d), month(d)-1, 1) );
+				var row_level = Math.ceil(month(d) / (no_months_in_a_row));
+				return (week_diff*cellSize) + row_level*cellSize*8 - cellSize/2 - shift_up;
+			})
+			.style("fill", function(d,i) { return colourScale(dataTexas[i][stateName])})
+			.datum(format);
 
     var month_titles = svg.selectAll(".month-title")  // Jan, Feb, Mar and the whatnot
-          .data(function(d) { 
-            return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-        .enter().append("text")
-          .text("monthTitle")
-          .attr("x", function(d, i) {
-            var month_padding = 1.2 * cellSize*7* ((month(d)-1) % (no_months_in_a_row));
-            return month_padding;
-          })
-          .attr("y", function(d, i) {
-            var week_diff = week(d) - week(new Date(year(d), month(d)-1, 1) );
-            var row_level = Math.ceil(month(d) / (no_months_in_a_row));
-            return (week_diff*cellSize) + row_level*cellSize*8 - cellSize - shift_up;
-          })
-          .attr("class", "month-title")
-          .attr("d", "monthTitle");
+        .data(function(d) { return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+		.enter().append("text")
+			.text("monthTitle")
+			.attr("x", function(d, i) {
+				var month_padding = 1.2 * cellSize*7* ((month(d)-1) % (no_months_in_a_row));
+				return month_padding;
+			})
+			.attr("y", function(d, i) {
+				var week_diff = week(d) - week(new Date(year(d), month(d)-1, 1) );
+				var row_level = Math.ceil(month(d) / (no_months_in_a_row));
+				return (week_diff*cellSize) + row_level*cellSize*8 - cellSize - shift_up;
+			})
+			.attr("class", "month-title")
+			.attr("d", "monthTitle");
 
-    var year_titles = svg.selectAll(".year-title")  // Jan, Feb, Mar and the whatnot
-          .data(function(d) { 
-            return d3.timeYears(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
-        .enter().append("text")
-          .text("yearTitle")
-          .attr("x", function(d, i) { return width/2 - 100; })
-          .attr("y", function(d, i) { return cellSize*5.5 - shift_up; })
-          .attr("class", "year-title")
-          .attr("d", "yearTitle");
-
-
-    //  Tooltip Object
-    // var tooltip = d3.select("body")
-      // .append("div").attr("id", "tooltip")
-      // .style("position", "absolute")
-      // .style("z-index", "10")
-      // .style("visibility", "hidden")
-      // .text("a simple tooltip");
-
-    // d3.csv("dji.csv", function(error, csv) {
-      // var data = d3.nest()
-        // .key(function(d) { return d.Date; })
-        // .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-        // .map(csv);
-
-      // rect.filter(function(d) { return d in data; })
-          // .attr("class", function(d) { return "day " + color(data[d]); })
-        // .select("title")
-          // .text(function(d) { return d + ": " + percent(data[d]); });
-
-       // //Tooltip
-      // rect.on("mouseover", mouseover);
-      // rect.on("mouseout", mouseout);
-      // function mouseover(d) {
-        // tooltip.style("visibility", "visible");
-        // var percent_data = (data[d] !== undefined) ? percent(data[d]) : percent(0);
-        // var purchase_text = d + ": " + percent_data;
-
-        // tooltip.transition()        
-                    // .duration(200)      
-                    // .style("opacity", .9);      
-        // tooltip.html(purchase_text)  
-                    // .style("left", (d3.event.pageX)+30 + "px")     
-                    // .style("top", (d3.event.pageY) + "px"); 
-      // }
-      // function mouseout (d) {
-        // tooltip.transition()        
-                // .duration(500)      
-                // .style("opacity", 0); 
-        // var $tooltip = $("#tooltip");
-        // $tooltip.empty();
-      // }
-
-    // });
-
-    // function dayTitle (t0) {
-      // return t0.toString().split(" ")[2];
-    // }
-    // function monthTitle (t0) {
-      // return t0.toLocaleString("en-us", { month: "long" });
-    // }
-    // function yearTitle (t0) {
-      // return t0.toString().split(" ")[3];
-    // }
+    d3.csv("data/progproj_Texas.csv", function(error, TexasData) {
+		var data = d3.nest()
+			.key(function(d) { return d.Date; })
+			.rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
+			.map(TexasData);
+    });
 }
 
-function DrawBarGraph(){
-	var canvas = d3.select('#wrapper')
-		.append('svg')
-		.attr('width', "900")
-		.attr('height', "550");
-		
-	var categories= ['','Accessories', 'Audiophile', 'Camera & Photo', 'Cell Phones', 'Computers','eBook Readers','Gadgets','GPS & Navigation','Home Audio','Office Electronics','Portable Audio','Portable Video','Security & Surveillance','Service','Television & Video','Car & Vehicle'];
-	var dollars = [213,209,190,179,156,209,190,179,213,209,190,179,156,209,190,190];
-	var colors = ['#0000b4','#0082ca','#0094ff','#0d4bcf','#0066AE','#074285','#00187B','#285964','#405F83','#416545','#4D7069','#6E9985','#7EBC89','#0283AF','#79BCBF','#99C19E'];
-	var grid = d3.range(25).map(function(i){
-		return {'x1':0,'y1':0,'x2':0,'y2':480};
-		});
-
-	var xscale = d3.scaleLinear()
-		.domain([10,250])
-		.range([0,722]);
-
-	var yscale = d3.scaleLinear()
-		.domain([0,categories.length])
-		.range([0,480]);
-
-	// var	xAxis = d3.svg.axis();
-		// xAxis.orient('bottom')
-			// .scale(xscale)
-			// .tickValues(tickVals);
-
-	// var	yAxis = d3.svg.axis();
-		// yAxis.orient('left')
-			// .scale(yscale)
-			// .tickSize(2)
-			// .tickFormat(function(d,i){ return categories[i]; })
-			// .tickValues(d3.range(17));
-
-	// var y_xis = canvas.append('g')
-		// .attr("transform", "translate(150,0)")
-		// .attr('id','yaxis')
-		// .call(yAxis);
-
-	// var x_xis = canvas.append('g')
-		// .attr("transform", "translate(150,480)")
-		// .attr('id','xaxis')
-		// .call(xAxis);
-
-	// var chart = canvas.append('g')
-		// .attr("transform", "translate(150,0)")
-		// .attr('id','bars')
-		// .selectAll('rect')
-		// .data(dollars)
-		// .enter()
-		// .append('rect')
-		// .attr('height',19)
-		// .attr({'x':0,'y':function(d,i){ return yscale(i)+19; }})
-		// .style('fill',function(d,i){ return colorScale(i); })
-		// .attr('width',function(d){ return 0; });
-}
-
-
-	// var d3.tsv("us-state-names.tsv", function(tsv){
-    //// extract just the names and Ids
-    // var names = {};
-    // tsv.forEach(function(d,i){
-      // names[d.id] = d.name;
-    // });
+function DrawBarGraph(stateName){
+	var stateNumber;
+	for (i = 0; i < dataStates.length; i++) {
+		if (dataStates[i].StateName == stateName) {
+			stateNumber = i;
+		}
+	}
 	
+	d3.csv('data/progproj_indices.csv', function(error, dataIndices) {
+		if (error) throw error;
+		dataIndices.forEach( function (d) {
+			d.Index = +d.Index
+			d.Grocery = +d.Grocery
+			d.Housing = +d.Housing
+			d.Utilities = +d.Utilities
+		})
+		
+		var DataList = ["Index", "Grocery", "Housing", "Utilities"]
+		var DataListIndex = [] ;
+		
+		for (i=0; i<4; i++) {
+			DataListIndex.push(dataIndices[stateNumber][DataList[i]])
+			console.log(dataIndices[stateNumber][DataList[i]]);
+		}
+		
+        //set up svg using margin conventions - we'll need plenty of room on the left for labels
+        var margin = {
+            top: 15,
+            right: 25,
+            bottom: 15,
+            left: 60
+        };
+		
+		var width = 500 - margin.left - margin.right,
+			height = 300 - margin.top - margin.bottom;
+		
+		var svgBar = d3.select("#BarGraph").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        var x = d3.scaleLinear()
+            .range([0, width])
+            .domain([50, 150]);
+
+        var y = d3.scaleLinear()
+			.range([0, height])
+			.domain([0, DataList.length]);
+
+        //make y axis to show bar names
+        var yAxis = d3.axisLeft(y)
+            //no tick marks
+            .tickSize(0);
+
+        var gy = svgBar.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+			
+        var bars = svgBar.selectAll(".bar")
+            .data(DataListIndex)
+            .enter()
+            .append("g").attr("class", "Bar")
+
+        //append rects
+        bars.append("rect")
+            .attr("class", "bar")
+            .attr("y", function (d, i) {
+                return y(i);
+            })
+            .attr("height", function(d, i) { return height/DataList.length; })
+            .attr("x", 0)
+            .attr("width", function (d, i) { return x(d); });
+
+        //add a value label to the right of each bar
+        // bars.append("text")
+            // .attr("class", "label")
+            //y position of the label is halfway down the bar
+            // .attr("y", function (d) {
+                // return y(d.StateNumber) + y.bandwidth() / 2 + 4;
+            // })
+            //x position is 3 pixels to the right of the bar
+            // .attr("x", function (d, i) {
+                // return x(d[DataList[i]]) + 3;
+            // })
+            // .text(function (d, i) {
+                // return d[DataList[i]];
+            // });
+	})
+        
+}

@@ -16,19 +16,26 @@ course: programmeer project
 		<link rel="stylesheet" href="progproj_css.css"></link>
 	</head>
 	<body onload="LoadData();">
-		<div class="row", id="Title">
-		</div>
-		<div class="row">
-			<div class="col-lg-9", id="USMap"></div>
-			<div class="col-lg-3", id="USMapLegend"></div>
-		</div>
-		<div class="row">
-			<div class="col-lg-6", id="Calander"></div>
-			<div class="col-lg-6", id="Scatterplot"></div>
-		</div>
-		<div class="row", id="Sources">
-			<h4>This site has been made with data from ....</h4>
-			<h4>This site has been made by Sanne Oud</h4>
-		</div>
+		<div class="container-fluid">
+			<div class="row", id="Title">
+			</div>
+			<div class="row">
+				<div class="col-9", id="USMap"></div>
+				<div class="col-3", id="USMapLegend"></div>
+			</div>
+			<div class="row">
+				<div class="slidecontainer">
+					<input type="range" min="2011" max="2015" value="2015" class="slider" id="dataYear" onchange="DrawMap();">
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-6", id="Calander"></div>
+				<div class="col-6", id="BarGraph"></div>
+			</div>
+			<div class="row", id="Sources">
+				<h4>This site has been made with data from ....</h4>
+				<h4>This site has been made by Sanne Oud</h4>
+			</div>
+		</div>	
 	</body>
 </html>
