@@ -23,3 +23,6 @@ Finaly found a way to link the names to the states, working on the barchart and 
 The states are coloured for population in 2015 and calander is not coloured.
 
 # Day 9 (14-6)
+The states can be coloured for population and Income in different years and calander is coloured for Texas.
+
+# Day 10 (15-6)
