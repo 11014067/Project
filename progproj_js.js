@@ -32,11 +32,15 @@ function LoadData() {
 }
 
 function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, ppTexas) {
-
+	
 	if (error) throw error;
-	dataGDP = ppGDP;
-	dataIncome = ppIncome;
-	dataIndices = ppIndices;
+	ppGDP.forEach( function(d){
+		d["2011"] = +d["2011"] 
+		d["2012"] = +d["2012"] 
+		d["2013"] = +d["2013"]
+		d["2014"] = +d["2014"]
+		d["2015"] = +d["2015"]
+	});
 	ppPopulation.forEach( function(d){
 		d["2010"] = +d["2010"] 
 		d["2011"] = +d["2011"] 
@@ -47,16 +51,29 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 		d["2016"] = +d["2016"]
 		Temp2015[d.StateName] = d["2015"]
 	});
+	ppIncome.forEach( function(d){
+		d["2011"] = +d["2011"] 
+		d["2012"] = +d["2012"] 
+		d["2013"] = +d["2013"]
+		d["2014"] = +d["2014"]
+		d["2015"] = +d["2015"]
+	});
+	dataGDP = ppGDP;
+	dataIndices = ppIndices;
+	dataIncome = ppIncome;
 	dataPopulation = ppPopulation;
+	ppStates.forEach( function(d){
+		d.IdentificationNumber = +d.IdentificationNumber
+	});
 	dataStates = ppStates;
 	dataTexas = ppTexas;
-	DrawMap(dataPopulation)
+	DrawMap(dataGDP)
 	DrawCalander("Texas")
-	DrawBarGraph("Texas")
+	DrawBarGraph("Florida")
 }
 
 function DrawMap(shownData) {
-	var year = document.getElementById("myYear")
+	var year = document.getElementById("dataYear").value
 	var standardYear = "2015"
 	
 	var width = 1000
@@ -67,12 +84,14 @@ function DrawMap(shownData) {
 		.attr("height", height);
 	var path = d3.geoPath();	
 	
-	
 	// get the colour scale
 	var colour = d3.scaleLinear()
-		.domain([0, d3.max(shownData, function (d, i) { 
+		.domain([d3.min(shownData, function (d, i) { 
+			return (Math.round(shownData[i][standardYear]/1000)*1000)/1.5; 
+			}), 
+			d3.max(shownData, function (d, i) { 
 			return Math.round(shownData[i][standardYear]/1000)*1000; 
-		})])
+			})])
 		.range(["#D5E2EF", "#08519C"]);
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
@@ -94,17 +113,23 @@ function DrawMap(shownData) {
 					}
 					return IDName 
 				})
-				.style("fill", function(d) { return colour(Temp2015[this.id]); });
+				.style("fill", function(d, i){
+					for (i=0; i<shownData.length; i++) {
+						if (this.id == shownData[i].StateName) {
+							return colour(shownData[i][year]);
+						}
+					}
+					return "rbg(80, 80, 80)"; });
 
 		svg.append("path")
 			.attr("class", "state-borders")
 			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, function(a, b) { return a !== b; })));
 	});
-	
+
 }
 
 function DrawCalander(stateName){
-	var width = 500,
+	var width = 900,
         height = 650,
         cellSize = 15; // cell size
 
@@ -197,12 +222,11 @@ function DrawBarGraph(stateName){
 		
 		for (i=0; i<4; i++) {
 			DataListIndex.push(dataIndices[stateNumber][DataList[i]])
-			console.log(dataIndices[stateNumber][DataList[i]]);
 		}
 		
         //set up svg using margin conventions - we'll need plenty of room on the left for labels
         var margin = {
-            top: 15,
+            top: 50,
             right: 25,
             bottom: 15,
             left: 60
@@ -245,7 +269,7 @@ function DrawBarGraph(stateName){
             .attr("y", function (d, i) {
                 return y(i);
             })
-            .attr("height", function(d, i) { return height/DataList.length; })
+            .attr("height", function(d, i) { return (height/DataList.length) - margin.bottom; })
             .attr("x", 0)
             .attr("width", function (d, i) { return x(d); });
 
@@ -265,4 +289,14 @@ function DrawBarGraph(stateName){
             // });
 	})
         
+}
+
+function updateMap(showData) {
+	//get year
+	var year = document.getElementById("dataYear").value
+	//get dataset
+	var dataName = document.getElementById("optionBox").value
+	var showData = "data" + dataName;
+	
+	
 }

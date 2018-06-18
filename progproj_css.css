@@ -18,10 +18,6 @@
   pointer-events: none;
 }
 
-      #BarGraph{
-        width: 800px;
-        margin: 0 auto;
-      }
       .background {
         fill: #eee;
       }
