@@ -280,9 +280,9 @@ function DrawBarGraph(stateName){
             .attr("y", function (d, i) {
                 return y(i);
             })
-            .attr("height", function(d, i) { return (height/DataList.length) - margin.bottom; })
+            .attr("height", function(d) { return (height/DataList.length) - margin.bottom; })
             .attr("x", 0)
-            .attr("width", function (d, i) { return x(d); });
+            .attr("width", function (d) { return x(d); });
 
         //add a value label to the right of each bar
         // bars.append("text")
@@ -349,6 +349,31 @@ function updateMap() {
 function clickedState(stateName) {
 	updateCalander(stateName);
 	updateBarGraph(stateName);
+}
+
+function updateCalander(stateName) {
+	
+}
+
+function updateBarGraph(stateName) {
+	var stateNumber;
+	var DataList = ["Index", "Grocery", "Housing", "Utilities"]
+	var DataListIndex = [] ;
+	
+	for (i = 0; i < dataStates.length; i++) {
+		if (dataStates[i].StateName == stateName) {
+			stateNumber = i;
+		}
+	}
+	for (i=0; i<DalaList.length; i++) {
+		DataListIndex.push(dataIndices[stateNumber][DataList[i]])
+	}
+	
+	var x = d3.scaleLinear()
+        .range([0, width])
+        .domain([50, 150]);
+		
+	d3.selectAll(".bar").attr("width", function (d) { return x(d); });
 }
 
 /**
