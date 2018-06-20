@@ -94,6 +94,11 @@ function DrawMap(shownData) {
 			})])
 		.range(["#D5E2EF", "#08519C"]);
 	
+	// var legendColours = { "$0": colour(0), "$20000": colour(20000), 
+			// "$40000": colour(40000), "$60000": colour(60000), 
+			// "$80000": colour(80000), "unknown": colour(undefined)
+		// }
+	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
 		
@@ -113,18 +118,24 @@ function DrawMap(shownData) {
 					}
 					return IDName 
 				})
-				.style("fill", function(d, i){
+				.style("fill", function(d) {
 					for (i=0; i<shownData.length; i++) {
 						if (this.id == shownData[i].StateName) {
 							return colour(shownData[i][year]);
 						}
 					}
-					return "rbg(80, 80, 80)"; });
+					return "rbg(80, 80, 80)"; 
+				})
+				.on("click", function() {
+					clickedState(this.id);
+				});
 
 		svg.append("path")
 			.attr("class", "state-borders")
 			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, function(a, b) { return a !== b; })));
 	});
+	
+	// getLegend("USMapLegend", LegendColours)
 
 }
 
@@ -295,9 +306,22 @@ function updateMap() {
 	//get year
 	var year = document.getElementById("dataYear").value;
 	//get dataset
-	var dataName = document.getElementById("optionBox").value;
+	var dataName = "data" + document.getElementById("optionBox").value;
 	
-	var shownData = dataPopulation;
+	if (dataName == "dataPopulation") {
+		shownData = dataPopulation;
+	}
+	else if (dataName == "dataGDP") {
+		shownData = dataGDP;
+	}
+	else if (dataName == "dataIncome") {
+		shownData = dataIncome;
+	}
+	else {
+		//give error
+		// !!!!!!!!!!!!!!!!!!!!!!!!!!!11
+		return;
+	}
 	
 	var standardYear = "2015";
 	
@@ -320,4 +344,106 @@ function updateMap() {
 					}
 					return "rbg(80, 80, 80)"; });
 
+}
+
+function clickedState(stateName) {
+	updateCalander(stateName);
+	updateBarGraph(stateName);
+}
+
+/**
+* Draw the legends.
+**/
+function getLegend(svgName, infoColours, width, height, margin){
+	
+	// get the wanted svg
+	var svg = d3.select("." + svgName);
+
+	// get the coordinates for the legend and its content
+	var legendX = width + margin.left + 10;
+	var legendY = margin.top + 10;
+	var legendWidth = margin.right - 50;
+	var legendHeight = 	height - 20;
+	var colourWidth = legendWidth/6;
+	var legendBorder = 15;
+	var infoWidth = legendWidth - colourWidth - (legendBorder * 3);
+			
+	// get all the different regions
+	var infoList = Object.keys(infoColours);
+	var infoHeight = ((legendHeight - (legendBorder * 3) )
+		/ infoList.length) - 10;
+	
+	// create a y coordinate scale for the legend
+	var legendYScale = d3.scale.linear()
+		.range([legendY + (legendBorder * 3), 
+			legendY + legendHeight - legendBorder])
+		.domain([0, infoList.length]);
+	
+	// draw the legend box
+	var legend = svg.append("g").attr("class", "legend");
+	legend.append("rect")
+		.attr("x", legendX)
+		.attr("y", legendY)
+		.attr("width", legendWidth)
+		.attr("height", legendHeight)
+		.attr("stroke", "black")
+		.attr("fill", "white")
+		.attr("rx", 10)
+		.attr("ry", 10);
+	
+	// draw the coloured rectangles
+	legend.selectAll(".colour rect")
+		.data(infoList)
+		.enter()
+		.append("rect")
+			.attr("class", "colour rect")
+			.attr("x", legendX + legendBorder)
+			.attr("y", function(d,i) { return legendYScale(i); })
+			.attr("width", colourWidth)
+			.attr("height", infoHeight)
+			.attr("stroke", "black")
+			.attr("fill", function(d) { return infoColours[d]; })
+			.attr("rx", 10)
+			.attr("ry", 10);
+		
+	// draw the rectangles for the colour discription
+	legend.selectAll(".text rect")
+		.data(infoList)
+		.enter()
+		.append("rect")
+			.attr("class", "text rect")
+			.attr("x", legendX + colourWidth + (legendBorder * 2))
+			.attr("y", function(d,i) { return legendYScale(i); })
+			.attr("width", infoWidth)
+			.attr("height", infoHeight)
+			.attr("stroke", "black")
+			.attr("fill", "white")
+			.attr("rx", 10)
+			.attr("ry", 10);
+	
+	// write the legend title
+	legend.append("text")
+		.attr("class", "title")
+		.attr("x", legendX + (legendWidth / 2))
+		.attr("y", legendY + (legendBorder * 2))
+		.attr("fill", "black")
+		.attr("font-size", "25px")
+		.attr("text-anchor", "middle")
+		.text("Legend");
+		
+	// write the colour discription
+	legend.selectAll(".legenda")
+		.data(infoList)
+		.enter()
+		.append("text")
+			.attr("class", "legenda")
+			.attr("x", legendX + colourWidth + (legendBorder * 2) + 10 )
+			.attr("y", function(d,i) {
+				return legendYScale(i) + infoHeight - 5; 
+			})
+			.attr("fill", "black")
+			.attr("font-size", function() { 
+				{ return Math.round(infoHeight/2); }
+			})
+			.text( function(d) { return d; });
 }

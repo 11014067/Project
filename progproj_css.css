@@ -6,9 +6,6 @@
 * This script holds the css for the progproj_html
 ***/
 
-.states :hover {
-  fill: red;
-}
 .state-borders {
   fill: none;
   stroke: #fff;
