@@ -23,3 +23,10 @@ Finaly found a way to link the names to the states, working on the barchart and 
 The states are coloured for population in 2015 and calander is not coloured.
 
 # Day 9 (14-6)
+The states can be coloured for population and Income in different years and calander is coloured for Texas.
+
+# Day 10 (15-6)
+The colouration looked weird and I found there to be a bug, been trying to fix it but the problem keeps shifting.
+
+# Day 11 (18-6)
+The colouration bug finaly fixed, now working on a update function for the colouration if another option or year is chosen and getting bootstrap grid to work.
