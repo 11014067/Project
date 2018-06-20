@@ -67,7 +67,7 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 	});
 	dataStates = ppStates;
 	dataTexas = ppTexas;
-	DrawMap(dataGDP)
+	DrawMap(dataPopulation)
 	DrawCalander("Texas")
 	DrawBarGraph("Florida")
 }
@@ -291,12 +291,33 @@ function DrawBarGraph(stateName){
         
 }
 
-function updateMap(showData) {
+function updateMap() {
 	//get year
-	var year = document.getElementById("dataYear").value
+	var year = document.getElementById("dataYear").value;
 	//get dataset
-	var dataName = document.getElementById("optionBox").value
-	var showData = "data" + dataName;
+	var dataName = document.getElementById("optionBox").value;
 	
+	var shownData = dataPopulation;
 	
+	var standardYear = "2015";
+	
+	// get the colour scale
+	var colour = d3.scaleLinear()
+		.domain([d3.min(shownData, function (d, i) { 
+			return (Math.round(shownData[i][standardYear]/1000)*1000)/1.5; 
+			}), 
+			d3.max(shownData, function (d, i) { 
+			return Math.round(shownData[i][standardYear]/1000)*1000; 
+			})])
+		.range(["#D5E2EF", "#08519C"]);	
+	
+	var temp = d3.selectAll('path')
+		.style("fill", function(d, i){
+					for (i=0; i<shownData.length; i++) {
+						if (this.id == shownData[i].StateName) {
+							return colour(shownData[i][year]);
+						}
+					}
+					return "rbg(80, 80, 80)"; });
+
 }
