@@ -29,4 +29,15 @@ The states can be coloured for population and Income in different years and cala
 The colouration looked weird and I found there to be a bug, been trying to fix it but the problem keeps shifting.
 
 # Day 11 (18-6)
-The colouration bug finaly fixed, now working on a update function for the colouration if another option or year is chosen and getting bootstrap grid to work.
+The colouration bug finaly fixed for the map, now working on a update function for the colouration if another option or years are chosen.
+
+# Day 12
+Making the final touches on the update functions for the map and working on bootstrap grid.
+
+# Day 13
+Made an update function for the bargraph where he deletes the old one and makes a new one, because updating did not want to work.
+
+# Day 14
+Adding almost all of the weather data and making the last update function for the weather.
+
+
