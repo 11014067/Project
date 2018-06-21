@@ -27,11 +27,11 @@ function LoadData() {
 		.defer(d3.csv, "data/progproj_indices.csv")
 		.defer(d3.csv, "data/progproj_population.csv")
 		.defer(d3.csv, "data/progproj_States.csv")
-		.defer(d3.csv, "data/progproj_Texas.csv")
+		.defer(d3.csv, "data/progproj_Weather.csv")
 		.await(CheckData);
 }
 
-function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, ppTexas) {
+function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, ppWeather) {
 	
 	if (error) throw error;
 	ppGDP.forEach( function(d){
@@ -72,7 +72,7 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 		d.IdentificationNumber = +d.IdentificationNumber
 	});
 	dataStates = ppStates;
-	dataTexas = ppTexas;
+	dataWeather = ppWeather;
 	DrawMap(dataPopulation)
 	DrawCalander("Texas")
 	DrawBarGraph("Florida")
@@ -147,7 +147,7 @@ function DrawMap(shownData) {
 
 function DrawCalander(stateName){
 	var width = 900,
-        height = 650,
+        height = 450,
         cellSize = 15; // cell size
 
     var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
@@ -190,7 +190,7 @@ function DrawCalander(stateName){
 				var row_level = Math.ceil(month(d) / (no_months_in_a_row));
 				return (week_diff*cellSize) + row_level*cellSize*8 - cellSize/2 - shift_up;
 			})
-			.style("fill", function(d,i) { return colourScale(dataTexas[i][stateName])})
+			.style("fill", function(d,i) { return colourScale(dataWeather[i][stateName])})
 			.datum(format);
 
     var month_titles = svg.selectAll(".month-title")  // Jan, Feb, Mar and the whatnot
@@ -209,12 +209,12 @@ function DrawCalander(stateName){
 			.attr("class", "month-title")
 			.attr("d", "monthTitle");
 
-    d3.csv("data/progproj_Texas.csv", function(error, TexasData) {
-		var data = d3.nest()
-			.key(function(d) { return d.Date; })
-			.rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-			.map(TexasData);
-    });
+    
+	// var data = d3.nest()
+		// .key(function(d) { return d.Date; })
+		// .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
+		// .map(dataWeather);
+ 
 }
 
 function DrawBarGraph(stateName){
@@ -237,13 +237,15 @@ function DrawBarGraph(stateName){
         top: 50,
         right: 25,
         bottom: 15,
-        left: 60
+        left: 100
     };
 		
-	var width = 500 - margin.left - margin.right,
+	var width = 600 - margin.left - margin.right,
 		height = 300 - margin.top - margin.bottom;
 	
-	var svgBar = d3.select("#BarGraph").append("svg")
+	var svgBar = d3.select("#BarGraph")
+		.append("svg")
+		.attr("class", "outerBarSVG")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
@@ -251,7 +253,7 @@ function DrawBarGraph(stateName){
 
     var x = d3.scaleLinear()
         .range([0, width])
-        .domain([50, 150]);
+        .domain([60, 310]);
 
     var y = d3.scaleLinear()
 		.range([0, height])
@@ -349,31 +351,17 @@ function clickedState(stateName) {
 }
 
 function updateCalander(stateName) {
-	
+	var colourScale = d3.scaleLinear()
+		.domain([-10, 40])
+		.range(["#2a02d8", "#D80404"])
+		
+	var temp = d3.selectAll('.day')
+		.style("fill", function(d,i) { return colourScale(dataWeather[i][stateName])})
 }
 
 function updateBarGraph(stateName) {
-	var stateNumber;
-	var DataList = ["Index", "Grocery", "Housing", "Utilities"]
-	var DataListIndex = [] ;
-	
-	for (i = 0; i < dataStates.length; i++) {
-		if (dataStates[i].StateName == stateName) {
-			stateNumber = i;
-		}
-	}
-	for (i=0; i<DataList.length; i++) {
-		DataListIndex.push(dataIndices[stateNumber][DataList[i]])
-	}
-	
-	var x = d3.scaleLinear()
-        .range([0, width])
-        .domain([50, 150]);
-		
-	var bars = d3.selectAll(".bar")
-	for (i = 0; i < bars.length; i++) {
-		bars[i].attr("width", function (d,i) { return x(DataListIndex[i]); });
-	}
+	d3.selectAll(".outerBarSVG").remove();
+	DrawBarGraph(stateName)
 }
 
 /**
