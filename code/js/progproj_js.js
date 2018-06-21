@@ -58,6 +58,12 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 		d["2014"] = +d["2014"]
 		d["2015"] = +d["2015"]
 	});
+	ppIndices.forEach( function (d) {
+		d.Index = +d.Index
+		d.Grocery = +d.Grocery
+		d.Housing = +d.Housing
+		d.Utilities = +d.Utilities
+	})
 	dataGDP = ppGDP;
 	dataIndices = ppIndices;
 	dataIncome = ppIncome;
@@ -219,78 +225,69 @@ function DrawBarGraph(stateName){
 		}
 	}
 	
-	d3.csv('data/progproj_indices.csv', function(error, dataIndices) {
-		if (error) throw error;
-		dataIndices.forEach( function (d) {
-			d.Index = +d.Index
-			d.Grocery = +d.Grocery
-			d.Housing = +d.Housing
-			d.Utilities = +d.Utilities
-		})
+	var DataList = ["Index", "Grocery", "Housing", "Utilities"]
+	var DataListIndex = [] ;
+	
+	for (i=0; i<4; i++) {
+		DataListIndex.push(dataIndices[stateNumber][DataList[i]])
+	}
 		
-		var DataList = ["Index", "Grocery", "Housing", "Utilities"]
-		var DataListIndex = [] ;
+    //set up svg using margin conventions - we'll need plenty of room on the left for labels
+    var margin = {
+        top: 50,
+        right: 25,
+        bottom: 15,
+        left: 60
+    };
 		
-		for (i=0; i<4; i++) {
-			DataListIndex.push(dataIndices[stateNumber][DataList[i]])
-		}
-		
-        //set up svg using margin conventions - we'll need plenty of room on the left for labels
-        var margin = {
-            top: 50,
-            right: 25,
-            bottom: 15,
-            left: 60
-        };
-		
-		var width = 500 - margin.left - margin.right,
-			height = 300 - margin.top - margin.bottom;
-		
-		var svgBar = d3.select("#BarGraph").append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+	var width = 500 - margin.left - margin.right,
+		height = 300 - margin.top - margin.bottom;
+	
+	var svgBar = d3.select("#BarGraph").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-        var x = d3.scaleLinear()
-            .range([0, width])
-            .domain([50, 150]);
+    var x = d3.scaleLinear()
+        .range([0, width])
+        .domain([50, 150]);
 
-        var y = d3.scaleLinear()
-			.range([0, height])
-			.domain([0, DataList.length]);
+    var y = d3.scaleLinear()
+		.range([0, height])
+		.domain([0, DataList.length]);
 
-        //make y axis to show bar names
-        var yAxis = d3.axisLeft(y)
-            //no tick marks
-            .tickSize(0);
+    //make y axis to show bar names
+    var yAxis = d3.axisLeft(y)
+        //no tick marks
+        .tickSize(0);
 
-        var gy = svgBar.append("g")
-            .attr("class", "y axis")
-            .call(yAxis)
+    var gy = svgBar.append("g")
+        .attr("class", "y axis")
+        .call(yAxis)
 			
-        var bars = svgBar.selectAll(".bar")
-            .data(DataListIndex)
-            .enter()
-            .append("g").attr("class", "Bar")
+    var bars = svgBar.selectAll(".bar")
+        .data(DataListIndex)
+        .enter()
+        .append("g").attr("class", "Bar")
 
         //append rects
-        bars.append("rect")
-            .attr("class", "bar")
-            .attr("y", function (d, i) {
-                return y(i);
-            })
-            .attr("height", function(d) { return (height/DataList.length) - margin.bottom; })
-            .attr("x", 0)
-            .attr("width", function (d) { return x(d); });
+    bars.append("rect")
+        .attr("class", "bar")
+        .attr("y", function (d, i) {
+            return y(i);
+        })
+        .attr("height", function(d) { return (height/DataList.length) - margin.bottom; })
+        .attr("x", 0)
+        .attr("width", function (d) { return x(d); });
 
-        //add a value label to the right of each bar
-        // bars.append("text")
-            // .attr("class", "label")
-            //y position of the label is halfway down the bar
-            // .attr("y", function (d) {
-                // return y(d.StateNumber) + y.bandwidth() / 2 + 4;
-            // })
+    //add a value label to the right of each bar
+    // bars.append("text")
+        // .attr("class", "label")
+        //y position of the label is halfway down the bar
+        // .attr("y", function (d) {
+             // return y(d.StateNumber) + y.bandwidth() / 2 + 4;
+        // })
             //x position is 3 pixels to the right of the bar
             // .attr("x", function (d, i) {
                 // return x(d[DataList[i]]) + 3;
@@ -298,9 +295,8 @@ function DrawBarGraph(stateName){
             // .text(function (d, i) {
                 // return d[DataList[i]];
             // });
-	})
-        
 }
+        
 
 function updateMap() {
 	//get year
@@ -337,12 +333,13 @@ function updateMap() {
 	
 	var temp = d3.selectAll('path')
 		.style("fill", function(d, i){
-					for (i=0; i<shownData.length; i++) {
-						if (this.id == shownData[i].StateName) {
-							return colour(shownData[i][year]);
-						}
-					}
-					return "rbg(80, 80, 80)"; });
+			for (i=0; i<shownData.length; i++) {
+				if (this.id == shownData[i].StateName) {
+					return colour(shownData[i][year]);
+				}
+			}
+			return "rbg(80, 80, 80)"; 
+		});
 
 }
 
@@ -365,7 +362,7 @@ function updateBarGraph(stateName) {
 			stateNumber = i;
 		}
 	}
-	for (i=0; i<DalaList.length; i++) {
+	for (i=0; i<DataList.length; i++) {
 		DataListIndex.push(dataIndices[stateNumber][DataList[i]])
 	}
 	
@@ -373,7 +370,10 @@ function updateBarGraph(stateName) {
         .range([0, width])
         .domain([50, 150]);
 		
-	d3.selectAll(".bar").attr("width", function (d) { return x(d); });
+	var bars = d3.selectAll(".bar")
+	for (i = 0; i < bars.length; i++) {
+		bars[i].attr("width", function (d,i) { return x(DataListIndex[i]); });
+	}
 }
 
 /**
