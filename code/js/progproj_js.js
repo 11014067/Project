@@ -82,8 +82,8 @@ function DrawMap(shownData) {
 	var year = document.getElementById("dataYear").value
 	var standardYear = "2015"
 	
-	var width = 800
-	var height = 550
+	var width = 950
+	var height = 650
 	var svg = d3.select("#USMap")
 		.append("svg")
 		.attr("width", width)
@@ -133,22 +133,33 @@ function DrawMap(shownData) {
 				.on("click", function() {
 					clickedState(this.id);
 				})
-				.append("title")
-					.text(function(d) {
-						var IDName = "NULL";
-						for (i=0; i<dataStates.length; i++) { 
-							if (d.id == dataStates[i].StateNumber) {
-								IDName = dataStates[i].StateName
-							}
+				.on('mouseover', function(d){
+					var name = this.id;
+					document.getElementById('stateName').innerHTML=name;
+					for (i=0; i<shownData.length; i++) {
+						if (name == shownData[i].StateName) {
+							return document.getElementById('stateData').innerHTML=(shownData[i][year]);
 						}
-						return IDName 
-					});
+					}					
+				})
 					
 		svg.append("path")
 			.attr("class", "state-borders")
 			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, function(a, b) { return a !== b; })));
 	});
 	
+	
+	if (shownData == dataPopulation) {
+		document.getElementById('stateInfo').innerHTML=("had a population of")
+	}
+	else if (shownData == dataIncome) {
+		document.getElementById('stateInfo').innerHTML=("had an average income of")
+	}
+	else {
+		document.getElementById('stateInfo').innerHTML=("had a GDP of")
+	}
+	
+	document.getElementById('stateYear').innerHTML=("in " + year)
 	// getLegend("USMapLegend", LegendColours)
 
 }
@@ -350,8 +361,31 @@ function updateMap() {
 				}
 			}
 			return "rbg(80, 80, 80)"; 
-		});
-
+		})
+		.on('mouseover', function(d){
+					var name = this.id;
+					document.getElementById('stateName').innerHTML=name;
+					for (i=0; i<shownData.length; i++) {
+						if (name == shownData[i].StateName) {
+							return document.getElementById('stateData').innerHTML=(shownData[i][year]);
+						}
+					}					
+				});
+	
+	if (shownData == dataPopulation) {
+		document.getElementById('stateInfo').innerHTML=("had a population of")
+		document.getElementById('stateInfo2').innerHTML=("")
+	}
+	else if (shownData == dataIncome) {
+		document.getElementById('stateInfo').innerHTML=("had an average income of")
+		document.getElementById('stateInfo2').innerHTML=(" dollar")
+	}
+	else {
+		document.getElementById('stateInfo').innerHTML=("had a GDP of")
+		document.getElementById('stateInfo2').innerHTML=(" dollar")
+	}
+	
+	document.getElementById('stateYear').innerHTML=("in " + year)
 }
 
 function clickedState(stateName) {
