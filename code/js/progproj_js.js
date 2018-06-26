@@ -74,21 +74,24 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 	dataStates = ppStates;
 	dataWeather = ppWeather;
 	DrawMap(dataPopulation)
-	DrawCalander("Texas")
-	DrawBarGraph("Florida")
+	DrawCalander("Alaska")
+	DrawBarGraph("Alaska")
 }
 
 function DrawMap(shownData) {
 	var year = document.getElementById("dataYear").value
 	var standardYear = "2015"
 	
-	var width = 1000
-	var height = 650
+	var width = 800
+	var height = 550
 	var svg = d3.select("#USMap")
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
-	var path = d3.geoPath();	
+	//var projection = d3.geoAlbersUsa()
+	//	.scale(1100);
+	// var projection = d3.geoAlbersUsa().scale(1100);
+	var path = d3.geoPath()//.projection(projection);	
 	
 	// get the colour scale
 	var colour = d3.scaleLinear()
@@ -99,11 +102,6 @@ function DrawMap(shownData) {
 			return Math.round(shownData[i][standardYear]/1000)*1000; 
 			})])
 		.range(["#D5E2EF", "#08519C"]);
-	
-	// var legendColours = { "$0": colour(0), "$20000": colour(20000), 
-			// "$40000": colour(40000), "$60000": colour(60000), 
-			// "$80000": colour(80000), "unknown": colour(undefined)
-		// }
 	
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
@@ -134,8 +132,18 @@ function DrawMap(shownData) {
 				})
 				.on("click", function() {
 					clickedState(this.id);
-				});
-
+				})
+				.append("title")
+					.text(function(d) {
+						var IDName = "NULL";
+						for (i=0; i<dataStates.length; i++) { 
+							if (d.id == dataStates[i].StateNumber) {
+								IDName = dataStates[i].StateName
+							}
+						}
+						return IDName 
+					});
+					
 		svg.append("path")
 			.attr("class", "state-borders")
 			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, function(a, b) { return a !== b; })));
@@ -153,50 +161,70 @@ function DrawCalander(stateName){
     var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
     var shift_up = cellSize * 3;
 	var colourScale = d3.scaleLinear()
-		.domain([-10, 40])
-		.range(["#2a02d8", "#D80404"])
+		.domain([-30, 0, 60])
+		.range(["#2A02D8", "#FFFFFF", "#D80404"])
+		
+	var monthTitle = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    var day = d3.timeFormat("%w"), // day of the week
-        day_of_month = d3.timeFormat("%e") // day of the month
-        day_of_year = d3.timeFormat("%j")
-        week = d3.timeFormat("%U"), // week number of the year
-        month = d3.timeFormat("%m"), // month number
+    var day = d3.timeFormat("%w"), 
+        week = d3.timeFormat("%U"), 
+        month = d3.timeFormat("%m"), 
         year = d3.timeFormat("%Y"),
-        format = d3.timeFormat("%Y-%m-%d");
+		informationDay = d3.timeFormat("%d")
+		informationMonth = d3.timeFormat("%B");
 
     var svg = d3.select("#Calander").selectAll("svg")
         .data(d3.range(2017, 2018))
 		.enter().append("svg")
 			.attr("width", width)
 			.attr("height", height)
-			.attr("class", "RdYlGn")
 		.append("g")
 
     var rect = svg.selectAll(".day")
         .data(function(d) { 
           return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
-		.enter().append("rect")
+		.enter()
+		.append("g")
+			.attr("class", "calendarSVG")
+	
+	rect.append("rect")
 			.attr("class", "day")
 			.attr("id", function(d,i) { return i; })
 			.attr("width", cellSize)
 			.attr("height", cellSize)
 			.attr("x", function(d) {
-				var month_padding = 1.2 * cellSize*7 * ((month(d)-1) % (no_months_in_a_row));
+				var month_padding = 1.2 * cellSize* 7 * ((month(d)-1) % (no_months_in_a_row));
 				return day(d) * cellSize + month_padding; 
 				})
 			.attr("y", function(d) { 
-				var week_diff = week(d) - week(new Date(year(d), month(d)-1, 1) );
-				var row_level = Math.ceil(month(d) / (no_months_in_a_row));
-				return (week_diff*cellSize) + row_level*cellSize*8 - cellSize/2 - shift_up;
+				var week_diff = week(d) - week(new Date(year(d), month(d) - 1, 1) );
+				var rowNum = Math.ceil(month(d) / (no_months_in_a_row));
+				return (week_diff * cellSize) + rowNum * cellSize * 8 - cellSize / 2 - shift_up;
 			})
 			.style("fill", function(d,i) { return colourScale(dataWeather[i][stateName])})
-			.datum(format);
+			.on("mouseover", function(d, i) { 
+				d3.selectAll(".calendarLegenda").style("opacity", "0");
+				d3.select("#calendarLegenda" + i).style("opacity", "1");})
+			.append("title")
+				.text(function(d, i) { return dataWeather[i][stateName] + " degrees"; });
+	
+	rect.append("text")
+		.attr("class", "calendarLegenda")
+		.attr("id", function(d,i) { return "calendarLegenda" + i; })
+		.attr("x", "300")
+		.attr("y", "300")
+		.style("opacity", "0")
+		.text(function(d,i) { 
+			information = "On the " + informationDay(d) + "th of " + 
+			informationMonth(d) + " the average temperature is " + 
+			dataWeather[i][stateName] + " degrees celcius";
+			return information; });
 
     var month_titles = svg.selectAll(".month-title")  // Jan, Feb, Mar and the whatnot
         .data(function(d) { return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
 		.enter().append("text")
-			.text("monthTitle")
+			.text(function(d,i) {return monthTitle[i];})
 			.attr("x", function(d, i) {
 				var month_padding = 1.2 * cellSize*7* ((month(d)-1) % (no_months_in_a_row));
 				return month_padding;
@@ -206,15 +234,7 @@ function DrawCalander(stateName){
 				var row_level = Math.ceil(month(d) / (no_months_in_a_row));
 				return (week_diff*cellSize) + row_level*cellSize*8 - cellSize - shift_up;
 			})
-			.attr("class", "month-title")
-			.attr("d", "monthTitle");
-
-    
-	// var data = d3.nest()
-		// .key(function(d) { return d.Date; })
-		// .rollup(function(d) { return (d[0].Close - d[0].Open) / d[0].Open; })
-		// .map(dataWeather);
- 
+			.attr("class", "monthTitle")
 }
 
 function DrawBarGraph(stateName){
@@ -260,9 +280,7 @@ function DrawBarGraph(stateName){
 		.domain([0, DataList.length]);
 
     //make y axis to show bar names
-    var yAxis = d3.axisLeft(y)
-        //no tick marks
-        .tickSize(0);
+    var yAxis = d3.axisLeft(y);
 
     var gy = svgBar.append("g")
         .attr("class", "y axis")
@@ -276,27 +294,18 @@ function DrawBarGraph(stateName){
         //append rects
     bars.append("rect")
         .attr("class", "bar")
-        .attr("y", function (d, i) {
-            return y(i);
-        })
+        .attr("y", function (d, i) { return y(i); })
         .attr("height", function(d) { return (height/DataList.length) - margin.bottom; })
         .attr("x", 0)
-        .attr("width", function (d) { return x(d); });
+        .attr("width", function (d) { return x(d); })
 
     //add a value label to the right of each bar
-    // bars.append("text")
-        // .attr("class", "label")
-        //y position of the label is halfway down the bar
-        // .attr("y", function (d) {
-             // return y(d.StateNumber) + y.bandwidth() / 2 + 4;
-        // })
-            //x position is 3 pixels to the right of the bar
-            // .attr("x", function (d, i) {
-                // return x(d[DataList[i]]) + 3;
-            // })
-            // .text(function (d, i) {
-                // return d[DataList[i]];
-            // });
+    bars.append("text")
+        .attr("class", "label")
+        .attr("y", function (d, i) { return y(i + 0.5 ) })
+		.attr("x", function (d) { return x(d) - 10; })
+		.text(function(d) { return d; });
+ 
 }
         
 
@@ -352,11 +361,26 @@ function clickedState(stateName) {
 
 function updateCalander(stateName) {
 	var colourScale = d3.scaleLinear()
-		.domain([-10, 40])
-		.range(["#2a02d8", "#D80404"])
+		.domain([-20, 0, 50])
+		.range(["#2A02D8", "#FFFFFF", "#D80404"])
+		informationDay = d3.timeFormat("%d")
+		informationMonth = d3.timeFormat("%B");
 		
 	var temp = d3.selectAll('.day')
 		.style("fill", function(d,i) { return colourScale(dataWeather[i][stateName])})
+	d3.selectAll(".calendarLegenda").remove()
+	d3.selectAll(".calendarSVG")
+		.append("text")
+			.attr("class", "calendarLegenda")
+			.attr("id", function(d,i) { return "calendarLegenda" + i; })
+			.attr("x", "300")
+			.attr("y", "300")
+			.style("opacity", "0")
+			.text(function(d,i) { 
+				information = "On the " + informationDay(d) + "th of " + 
+				informationMonth(d) + " the average temperature is " + 
+				dataWeather[i][stateName] + " degrees celcius";
+				return information; });
 }
 
 function updateBarGraph(stateName) {
