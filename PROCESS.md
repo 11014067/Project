@@ -31,13 +31,25 @@ The colouration looked weird and I found there to be a bug, been trying to fix i
 # Day 11 (18-6)
 The colouration bug finaly fixed for the map, now working on a update function for the colouration if another option or years are chosen.
 
-# Day 12
+# Day 12 (19-6)
 Making the final touches on the update functions for the map and working on bootstrap grid.
 
-# Day 13
+# Day 13 (20-6)
 Made an update function for the bargraph where he deletes the old one and makes a new one, because updating did not want to work.
 
-# Day 14
+# Day 14 (21-6)
 Adding almost all of the weather data and making the last update function for the weather.
 
+# Day 15 (22-6)
+Giving the states and calendar a title as mayby temporary tooltip.
 
+# Day 16 (25-6)
+Tooltip made.
+
+# Day 17 (26-6)
+
+
+# Day 18 (27-6)
+
+
+# Day 19 (28-6)
