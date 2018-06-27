@@ -3,14 +3,32 @@
 * Student number: 11014067
 * programming project
 *
-* This script holds the css for the progproj_html
+* This script holds the css for the 
+* index html for the programming project.
 ***/
 
 
 h1 {
-	text-align:center;
+	text-align: center;
+}
+ 
+h2 {
+	display: inline;
+} 
+
+#legend {
+    padding: 1.5em 0 0 1.5em;
 }
 
+li.key {
+    border-top-width: 15px;
+    border-top-style: solid;
+    font-size: .75em;
+    width: 10%;
+    padding-left: 0;
+    padding-right: 0;
+}
+ 
 /* Map */
 
 

@@ -3,7 +3,10 @@
 * Student number: 11014067
 * programmeer project
 *
-* This script makes ......
+* This script makes a US map, a weather calendar and a barchart.
+* The US map shows population, income or GDP data from 2011-2015.
+* The calendar shows the temperature in that state in 2017 and the 
+* barchart shows how expensive living is in the selected state.
 *
 * sources:
 *
@@ -16,11 +19,10 @@ let dataGDP = {},
 	dataIncome = {}, 
 	dataIndices = {}, 
 	dataPopulation = {},
-	dataStates = {},
-	dataTexas = {};
+	dataStates = {};
 
 /**
-* Load data
+* Load all the data files.
 **/
 function LoadData() {
 	
@@ -35,17 +37,24 @@ function LoadData() {
 		.await(CheckData);
 }
 
+
+/**
+* Check the data, make the data usable and start making the site.
+**/
 function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, ppWeather) {
 	
+	// check for errors
 	if (error) throw error;
-	ppGDP.forEach( function(d){
+	
+	// make the strings into variables
+	ppGDP.forEach( function(d) {
 		d["2011"] = +d["2011"] 
 		d["2012"] = +d["2012"] 
 		d["2013"] = +d["2013"]
 		d["2014"] = +d["2014"]
 		d["2015"] = +d["2015"]
 	});
-	ppPopulation.forEach( function(d){
+	ppPopulation.forEach( function(d) {
 		d["2010"] = +d["2010"] 
 		d["2011"] = +d["2011"] 
 		d["2012"] = +d["2012"] 
@@ -54,7 +63,7 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 		d["2015"] = +d["2015"]
 		d["2016"] = +d["2016"]
 	});
-	ppIncome.forEach( function(d){
+	ppIncome.forEach( function(d) {
 		d["2011"] = +d["2011"] 
 		d["2012"] = +d["2012"] 
 		d["2013"] = +d["2013"]
@@ -67,46 +76,56 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 		d.Housing = +d.Housing
 		d.Utilities = +d.Utilities
 	});
+	ppStates.forEach( function(d){
+		d.IdentificationNumber = +d.IdentificationNumber
+	});
+	
+	// save the new data in global variables
 	dataGDP = ppGDP;
 	dataIndices = ppIndices;
 	dataIncome = ppIncome;
 	dataPopulation = ppPopulation;
-	ppStates.forEach( function(d){
-		d.IdentificationNumber = +d.IdentificationNumber
-	});
 	dataStates = ppStates;
 	dataWeather = ppWeather;
+	
+	// start drawing the site
 	DrawMap(dataPopulation);
 	DrawCalander("Alaska");
 	DrawBarGraph("Alaska");
 }
 
 function DrawMap(shownData) {
-	const year = document.getElementById("dataYear").value;
-	const standardYear = "2015";
 	
+	// get the year and svg size
+	const year = "2015";
 	const width = 950;
 	const height = 650;
+	
+	// start the svg
 	const svg = d3.select("#USMap")
 		.append("svg")
 		.attr("width", width)
 		.attr("height", height);
+		
+	// make a path for the map
 	const path = d3.geoPath();
 
-	// get the colour scale
+	// get the colour scale with a lower minimum to fit all the years
 	const colour = d3.scaleLinear()
 		.domain([d3.min(shownData, function (d, i) { 
-			return (Math.round(shownData[i][standardYear]/1000)*1000)/1.5; 
+			return (Math.round(shownData[i][year]/1000)*1000)/1.5; 
 			}), 
 			d3.max(shownData, function (d, i) { 
-				return Math.round(shownData[i][standardYear]/1000)*1000; 
+				return Math.round(shownData[i][year]/1000)*1000; 
 			})
 		])
 		.range(["#D5E2EF", "#08519C"]);
 	
+	// get the US map data
 	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
 		if (error) throw error;
 		
+		// make the states and colour them according to the data
 		svg.append("g")
 			.attr("class", "states")
 			.selectAll("path")
@@ -144,13 +163,17 @@ function DrawMap(shownData) {
 						}
 					}					
 				});
-					
+				
+		// append the borders with the path		
 		svg.append("path")
 			.attr("class", "state-borders")
 			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, 
 				function(a, b) { return a !== b; })));
 	});
 	
+	
+	// create the tooltip starting with Alaska
+	document.getElementById('stateName').innerHTML=shownData[1].StateName;
 	
 	if (shownData == dataPopulation) {
 		document.getElementById('stateInfo')
@@ -165,31 +188,41 @@ function DrawMap(shownData) {
 			.innerHTML=("had a GDP of");
 	}
 	
+	document.getElementById('stateData')
+		.innerHTML=(shownData[1][year]);
+	
 	document.getElementById('stateYear')
 		.innerHTML=("in " + year);
+		
 }
 
+/**
+* Draw the calendar for any state.
+**/
+
 function DrawCalander(stateName){
+	
+	// get all the sizes
 	const width = 900,
         height = 450,
-        cellSize = 15; 
-
-    const no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
-    const shift_up = cellSize * 3;
+        cellSize = 15,
+		no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50)),
+		shift_up = cellSize * 3;
+		
+	// make a colour scale
 	const colourScale = d3.scaleLinear()
 		.domain([-30, 0, 60])
 		.range(["#2A02D8", "#FFFFFF", "#D80404"]);
-		
-	const monthTitle = [ "January", "February", "March", "April", "May", "June",
-		"July", "August", "September", "October", "November", "December"];
-
-    const day = d3.timeFormat("%w"), 
+	
+	// get the months in the year and the necessery date formats
+	const day = d3.timeFormat("%w"), 
         week = d3.timeFormat("%U"), 
         month = d3.timeFormat("%m"), 
         year = d3.timeFormat("%Y"),
 		informationDay = d3.timeFormat("%d"),
 		informationMonth = d3.timeFormat("%B");
-
+		
+	// make a svg
     const svg = d3.select("#Calander").selectAll("svg")
         .data(d3.range(2017, 2018))
 		.enter().append("svg")
@@ -197,6 +230,7 @@ function DrawCalander(stateName){
 			.attr("height", height)
 		.append("g");
 
+	// make a "g" for every day
     const rect = svg.selectAll(".day")
         .data(function(d) { 
           return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1));
@@ -205,6 +239,7 @@ function DrawCalander(stateName){
 		.append("g")
 			.attr("class", "calendarSVG");
 	
+	// make a square for every day
 	rect.append("rect")
 		.attr("class", "day")
 		.attr("id", function(d,i) { return i; })
@@ -230,6 +265,7 @@ function DrawCalander(stateName){
 			d3.select("#calendarLegenda" + i).style("opacity", "1");
 		});
 	
+	// make a tooltip
 	rect.append("text")
 		.attr("class", "calendarLegenda")
 		.attr("id", function(d,i) { return "calendarLegenda" + i; })
@@ -242,13 +278,14 @@ function DrawCalander(stateName){
 			dataWeather[i][stateName] + " degrees celcius";
 			return information; 
 		});
-
+		
+	// title the months
     const month_titles = svg.selectAll(".month-title")  
         .data(function(d) { 
 			return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); 
 			})
 		.enter().append("text")
-			.text(function(d,i) {return monthTitle[i];})
+			.text(function(d,i) { return informationMonth(d); })
 			.attr("x", function(d, i) {
 				let month_padding = 1.2 * cellSize* 7 * 
 					((month(d)-1) % (no_months_in_a_row));
@@ -264,7 +301,12 @@ function DrawCalander(stateName){
 			.attr("class", "monthTitle");
 }
 
+/**
+* Draw a bar graph about the cost of living in a state.
+**/
+
 function DrawBarGraph(stateName){
+	// get the state number
 	let stateNumber = 0;
 	for (i = 0; i < dataStates.length; i++) {
 		if (dataStates[i].StateName == stateName) {
@@ -272,23 +314,26 @@ function DrawBarGraph(stateName){
 		}
 	}
 	
-	const DataList = ["Index", "Grocery", "Housing", "Utilities"],
-		DataListIndex = [] ;
+	// make a object with the data for the state
+	const DataList = ["Index", "Grocery", "Housing", "Utilities"];
+	let DataListIndex = [] ;
 	
-	for (i=0; i<4; i++) {
+	for (i=0; i<DataList.length; i++) {
 		DataListIndex.push(dataIndices[stateNumber][DataList[i]]);
 	}
-		
+	
+	// get the svg sizes
     const margin = {
         top: 50,
         right: 25,
         bottom: 15,
-        left: 100
+        left: 50
     };
 		
-	const width = 600 - margin.left - margin.right,
+	const width = 700 - margin.left - margin.right,
 		height = 300 - margin.top - margin.bottom;
 	
+	// make the svg
 	const svgBar = d3.select("#BarGraph")
 		.append("svg")
 		.attr("class", "outerBarSVG")
@@ -298,50 +343,51 @@ function DrawBarGraph(stateName){
         .attr("transform", "translate(" + margin.left + "," + 
 			margin.top + ")");
 
+	// make the x and y scale and y axis
     const x = d3.scaleLinear()
         .range([0, width])
-        .domain([60, 310]);
+        .domain([50, 350]);
 
-    const y = d3.scaleLinear()
-		.range([0, height])
-		.domain([0, DataList.length]);
+    const y = d3.scaleOrdinal()
+		.range([0, (height / 4), (height/ 2), (height * 3 / 4)])
+		.domain(DataList);
 
-    //make y axis to show bar names
     const yAxis = d3.axisLeft(y);
 
-    const gy = svgBar.append("g")
+    svgBar.append("g")
         .attr("class", "y axis")
         .call(yAxis);
 			
+	// make the bars with labels
     const bars = svgBar.selectAll(".bar")
         .data(DataListIndex)
         .enter()
         .append("g").attr("class", "Bar");
 
-    
     bars.append("rect")
         .attr("class", "bar")
-        .attr("y", function (d, i) { return y(i); })
+        .attr("y", function (d, i) { return y(DataList[i]); })
         .attr("height", function(d) { 
 			return (height/DataList.length) - margin.bottom; 
 		})
         .attr("x", 0)
         .attr("width", function (d) { return x(d); });
 
-    //add a value label to the right of each bar
     bars.append("text")
         .attr("class", "label")
-        .attr("y", function (d, i) { return y(i + 0.5 ) })
+        .attr("y", function (d, i) { return y(DataList[i]) + 20; })
 		.attr("x", function (d) { return x(d) - 10; })
 		.text(function(d) { return d; });
  
 }
         
+/**
+* Update the map for year or shown value.
+**/
 
 function updateMap() {
-	//get year
+	//get the year and dataset
 	const year = document.getElementById("dataYear").value;
-	//get dataset
 	const dataName = "data" + document.getElementById("optionBox").value;
 	
 	if (dataName == "dataPopulation") {
@@ -353,15 +399,10 @@ function updateMap() {
 	else if (dataName == "dataIncome") {
 		shownData = dataIncome;
 	}
-	else {
-		//give error
-		// !!!!!!!!!!!!!!!!!!!!!!!!!!!11
-		return;
-	}
 	
 	const standardYear = "2015";
 	
-	// get the colour scale
+	// remake the colour scale to keep it the same for each year
 	const colour = d3.scaleLinear()
 		.domain([d3.min(shownData, function (d, i) { 
 				return (Math.round(shownData[i][standardYear]/1000)*1000)/1.5; 
@@ -372,6 +413,7 @@ function updateMap() {
 		])
 		.range(["#D5E2EF", "#08519C"]);	
 	
+	// re-colour the states and update the tooltip
 	const temp = d3.selectAll('path')
 		.style("fill", function(d, i){
 			for (i=0; i<shownData.length; i++) {
@@ -415,23 +457,39 @@ function updateMap() {
 		.innerHTML=("in " + year);
 }
 
+/**
+* Change the calendar and bar graph if a state is selected.
+**/
+
 function clickedState(stateName) {
-	updateCalander(stateName);
-	updateBarGraph(stateName);
+	updateCalendar(stateName);
+	d3.selectAll(".outerBarSVG").remove();
+	DrawBarGraph(stateName);
+	document.getElementById('graphTitle')
+		.innerHTML=stateName;
 }
 
-function updateCalander(stateName) {
+/**
+* Re-colour the calendar for a new state.
+**/
+
+function updateCalendar(stateName) {
+	// get the colour scale and date formats
 	const colourScale = d3.scaleLinear()
 		.domain([-20, 0, 50])
 		.range(["#2A02D8", "#FFFFFF", "#D80404"]),
 		informationDay = d3.timeFormat("%d"),
 		informationMonth = d3.timeFormat("%B");
 		
+	// re-colour each day rect
 	const temp = d3.selectAll('.day')
 		.style("fill", function(d,i) { 
 			return colourScale(dataWeather[i][stateName])
 		});
+		
+	// remove the tooltip and make a new one
 	d3.selectAll(".calendarLegenda").remove();
+	
 	d3.selectAll(".calendarSVG")
 		.append("text")
 			.attr("class", "calendarLegenda")
@@ -445,9 +503,4 @@ function updateCalander(stateName) {
 				dataWeather[i][stateName] + " degrees celcius";
 				return information; 
 			});
-}
-
-function updateBarGraph(stateName) {
-	d3.selectAll(".outerBarSVG").remove();
-	DrawBarGraph(stateName);
 }
