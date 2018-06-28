@@ -218,8 +218,8 @@ function DrawCalander(stateName){
 		
 	// make a colour scale
 	const colourScale = d3.scaleLinear()
-		.domain([-30, 0, 60])
-		.range(["#2A02D8", "#FFFFFF", "#D80404"]);
+		.domain([-30, 0, 50])
+		.range(["#007CC4", "#F7F7F7", "#E84302"]);
 	
 	// get the months in the year and the necessery date formats
 	const day = d3.timeFormat("%w"), 
@@ -479,8 +479,8 @@ function clickedState(stateName) {
 function updateCalendar(stateName) {
 	// get the colour scale and date formats
 	const colourScale = d3.scaleLinear()
-		.domain([-20, 0, 50])
-		.range(["#2A02D8", "#FFFFFF", "#D80404"]),
+		.domain([-30, 0, 50])
+		.range(["#007CC4", "#F7F7F7", "#E84302"]),
 		informationDay = d3.timeFormat("%d"),
 		informationMonth = d3.timeFormat("%B");
 		
