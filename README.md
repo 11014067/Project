@@ -1,6 +1,7 @@
 # Project
+Sanne Oud: https://11014067.github.io/Project/index.html
 
-![](doc/image.png)
+![](doc/proposal.png)
 
 ## Data sources:
 * The cost of living, groceries, housing and health index
