@@ -1,3 +1,5 @@
+# Report
+
 ![](doc/startPage.png)
 
 My visualisation shows a map of the US, a calendar and a barchart to show information about population, GDP, income, weather and cost of living.
