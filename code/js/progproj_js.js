@@ -276,8 +276,8 @@ function DrawCalander(stateName){
 	rect.append("text")
 		.attr("class", "calendarLegenda")
 		.attr("id", function(d,i) { return "calendarLegenda" + i; })
-		.attr("x", "300")
-		.attr("y", "300")
+		.attr("x", function() { return width/3 - 30})
+		.attr("y", function() { return height*2/3 + 30})
 		.style("opacity", "0")
 		.text(function(d,i) { 
 			information = "On the " + informationDay(d) + "th of " + 
@@ -509,15 +509,26 @@ function updateCalendar(stateName) {
 }
 
 /**
-* Show/hide the storytelling.
+* Show/hide the storytelling/help.
 **/
 function showStory() {
 	
 	// show or hide the dropdown
-	if (d3.select(".dropdownContent").style("display") == "none") {
-		d3.select(".dropdownContent").style("display", "block");
+	if (d3.select(".dropdownContentStory").style("display") == "none") {
+		d3.select(".dropdownContentStory").style("display", "block");
 	}
 	else {
-		d3.select(".dropdownContent").style("display", "none");
+		d3.select(".dropdownContentStory").style("display", "none");
+	}
+}
+
+function showHelp() {
+	
+	// show or hide the dropdown
+	if (d3.select(".dropdownContentHelp").style("display") == "none") {
+		d3.select(".dropdownContentHelp").style("display", "block");
+	}
+	else {
+		d3.select(".dropdownContentHelp").style("display", "none");
 	}
 }

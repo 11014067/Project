@@ -8,10 +8,10 @@ course: programmeer project
 	<head>
 		<title>States data</title>
 		<meta charset="utf-8">
-		<script src="http://d3js.org/d3.v4.min.js"></script>
-		<script src="http://d3js.org/topojson.v2.min.js"></script>
-		<script src="http://d3js.org/queue.v1.min.js"></script>
-		<script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+		<script src="https://d3js.org/d3.v4.min.js"></script>
+		<script src="https://d3js.org/topojson.v2.min.js"></script>
+		<script src="https://d3js.org/queue.v1.min.js"></script>
+		<script src="https://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
 		<script src="code/js/progproj_js.js"></script>
 		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		<link rel="shortcut icon" href="images/statesImage.png">
@@ -25,14 +25,28 @@ course: programmeer project
 					<h1 class="title" >What American state fits you best?</h1>
 				</div>
 				<div class="col-lg-3">
-					<button onclick="showStory();">See the story behind the visualization</button>
-					<div class="dropdownContent" style="display:none"> 
-						<h4>On this site you can find data about the different states of the US.</h4>
-						<h4>This can help you decide which state fits you best if you are thinking about moving to the US.</h4>
-						<h4>The map can give you information about the population, GDP and average income from 2011 to 2015.</h4>
-						<h4>Underneath the map you can find the temperature in 2017 and indices about the cost of living in a state.</h4>
-						<h5>Links to the data is at the end of the page.</h5>
+					<div class="row">
+						<button onclick="showStory();">See the story behind the visualization</button>
 					</div>
+					<div class="row">
+						<button onclick="showHelp();">HELP ME!</button>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="dropdownContentStory" style="display:none"> 
+					<h4>On this site you can find data about the different states of the US.</h4>
+					<h4>This can help you decide which state fits you best if you are thinking about moving to the US.</h4>
+					<h4>The map can give you information about the population, GDP and average income from 2011 to 2015.</h4>
+					<h4>Underneath the map you can find the temperature in 2017 and indices about the cost of living in a state.</h4>
+					<h5>Links to the data is at the end of the page.</h5>
+				</div>
+				<div class="dropdownContentHelp" style="display:none"> 
+					<h4>When hovering over the states, the data appears on the left.</h4>
+					<h4>With the slider you can chose a year between 2011 and 2015.</h4>
+					<h4>with the dropdown next to it you can chose to see the average income, GDP or population.</h4>
+					<h4>If you click a state the teperature calendar and cost of living indices will show data for that state.</h4>
+					<h4>If you hover over the calendar you can see the exact temperature in the bottom right.</h4>
 				</div>
 			</div>
 			<div class="row">
@@ -60,7 +74,14 @@ course: programmeer project
 			</div>
 			<div class="row">
 				<div class="col-lg-7", id="Calander"></div>
-				<div class="col-lg-5", id="BarGraph"></div>
+				<div class="col-lg-5">
+					<div class="row">
+						<h4>Here you can see how expensive living is in this state.</h4>
+						<h4>The index is 100 over the hole US.</h4>
+						<h4>If a state has a high index, then it is more expensive.</h4>
+					</div>
+					<div class="row" id="BarGraph"></div>
+				</div>
 			</div>
 			<div class="row", id="Sources">
 				<h4>This site has been made with data about 

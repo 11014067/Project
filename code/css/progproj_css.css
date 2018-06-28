@@ -29,7 +29,9 @@ h2 {
 }
 
 /* Calander */
-
+.calendarLegenda {
+	font: 16px sans-serif;
+}
 
 /* Barchart */
 
