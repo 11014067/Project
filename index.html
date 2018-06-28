@@ -21,7 +21,19 @@ course: programmeer project
 	<body onload="LoadData();">
 		<div class="container-fluid">
 			<div class="row">
-				<h1 class="title" >What American state fits you best?</h1>
+				<div class="col-lg-9">
+					<h1 class="title" >What American state fits you best?</h1>
+				</div>
+				<div class="col-lg-3">
+					<button onclick="showStory();">See the story behind the visualization</button>
+					<div class="dropdownContent" style="display:none"> 
+						<h4>On this site you can find data about the different states of the US.</h4>
+						<h4>This can help you decide which state fits you best if you are thinking about moving to the US.</h4>
+						<h4>The map can give you information about the population, GDP and average income from 2011 to 2015.</h4>
+						<h4>Underneath the map you can find the temperature in 2017 and indices about the cost of living in a state.</h4>
+						<h5>Links to the data is at the end of the page.</h5>
+					</div>
+				</div>
 			</div>
 			<div class="row">
 				<div class="col-lg-3", id="USMapInfo">
@@ -51,7 +63,12 @@ course: programmeer project
 				<div class="col-lg-5", id="BarGraph"></div>
 			</div>
 			<div class="row", id="Sources">
-				<h4>This site has been made with data from ....</h4>
+				<h4>This site has been made with data about 
+					<a href="https://www.census.gov/data/tables/2016/demo/popest/state-total.html">population</a>,	
+					<a href="https://www.bea.gov/iTable/iTable.cfm?reqid=70&step=10&isuri=1&7003=200&7035=-1&7004=sic&7005=1&7006=xx&7036=-1&7001=1200&7002=1&7090=70&7007=-1&7093=levels#reqid=70&step=10&isuri=1&7003=200&7004=naics&7035=-1&7005=1&7006=xx&7001=1200&7036=-1&7002=1&7090=70&7007=-1&7093=levels">GDP</a>, 
+					<a href="https://en.wikipedia.org/wiki/List_of_U.S._states_by_income">income</a>, 
+					<a href="https://www.wunderground.com/">weather</a> and 
+					<a href="https://www.missourieconomy.org/indicators/cost_of_living/">cost of living.</a></h4>
 				<h4>This site has been made by Sanne Oud</h4>
 			</div>
 		</div>	

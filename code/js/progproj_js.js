@@ -9,6 +9,11 @@
 * barchart shows how expensive living is in the selected state.
 *
 * sources:
+* indices:	https://www.missourieconomy.org/indicators/cost_of_living/
+* weather: 	https://www.wunderground.com/
+* population: https://www.census.gov/data/tables/2016/demo/popest/state-total.html
+* GDP:		https://www.bea.gov/iTable/iTable.cfm?reqid=70&step=10&isuri=1&7003=200&7035=-1&7004=sic&7005=1&7006=xx&7036=-1&7001=1200&7002=1&7090=70&7007=-1&7093=levels#reqid=70&step=10&isuri=1&7003=200&7004=naics&7035=-1&7005=1&7006=xx&7001=1200&7036=-1&7002=1&7090=70&7007=-1&7093=levels
+* income: 	https://en.wikipedia.org/wiki/List_of_U.S._states_by_income
 *
 **/
 
@@ -94,6 +99,9 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 	DrawBarGraph("Alaska");
 }
 
+/**
+* Draw the US map.
+**/
 function DrawMap(shownData) {
 	
 	// get the year and svg size
@@ -199,7 +207,6 @@ function DrawMap(shownData) {
 /**
 * Draw the calendar for any state.
 **/
-
 function DrawCalander(stateName){
 	
 	// get all the sizes
@@ -274,7 +281,7 @@ function DrawCalander(stateName){
 		.style("opacity", "0")
 		.text(function(d,i) { 
 			information = "On the " + informationDay(d) + "th of " + 
-			informationMonth(d) + " the average temperature is " + 
+			informationMonth(d) + " it was " + 
 			dataWeather[i][stateName] + " degrees celcius";
 			return information; 
 		});
@@ -304,7 +311,6 @@ function DrawCalander(stateName){
 /**
 * Draw a bar graph about the cost of living in a state.
 **/
-
 function DrawBarGraph(stateName){
 	// get the state number
 	let stateNumber = 0;
@@ -384,7 +390,6 @@ function DrawBarGraph(stateName){
 /**
 * Update the map for year or shown value.
 **/
-
 function updateMap() {
 	//get the year and dataset
 	const year = document.getElementById("dataYear").value;
@@ -460,7 +465,6 @@ function updateMap() {
 /**
 * Change the calendar and bar graph if a state is selected.
 **/
-
 function clickedState(stateName) {
 	updateCalendar(stateName);
 	d3.selectAll(".outerBarSVG").remove();
@@ -472,7 +476,6 @@ function clickedState(stateName) {
 /**
 * Re-colour the calendar for a new state.
 **/
-
 function updateCalendar(stateName) {
 	// get the colour scale and date formats
 	const colourScale = d3.scaleLinear()
@@ -503,4 +506,18 @@ function updateCalendar(stateName) {
 				dataWeather[i][stateName] + " degrees celcius";
 				return information; 
 			});
+}
+
+/**
+* Show/hide the storytelling.
+**/
+function showStory() {
+	
+	// show or hide the dropdown
+	if (d3.select(".dropdownContent").style("display") == "none") {
+		d3.select(".dropdownContent").style("display", "block");
+	}
+	else {
+		d3.select(".dropdownContent").style("display", "none");
+	}
 }
