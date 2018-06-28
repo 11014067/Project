@@ -1,3 +1,5 @@
+![](doc/startPage.png)
+
 My visualisation shows a map of the US, a calendar and a barchart to show information about population, GDP, income, weather and cost of living.
 
 To make all these visualisations there are different funcitons: loading and checking data, making the visualisation, updating visualisations and information buttons.
