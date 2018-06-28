@@ -234,6 +234,7 @@ function DrawCalendar(stateName){
 		.enter().append('svg')
 			.attr('width', width)
 			.attr('height', height)
+			.attr('id', 'outerCalendar')
 		.append('g');
 
 	// make a 'g' for every day
@@ -268,22 +269,32 @@ function DrawCalendar(stateName){
 		})
 		.on('mouseover', function(d, i) { 
 			d3.selectAll('.calendarLegenda').style('opacity', '0');
-			d3.select('#calendarLegenda' + i).style('opacity', '1');
+			d3.selectAll('#calendarLegenda' + i).style('opacity', '1');
 		});
 	
 	// make a tooltip
 	rect.append('text')
 		.attr('class', 'calendarLegenda')
 		.attr('id', function(d,i) { return 'calendarLegenda' + i; })
-		.attr('x', function() { return width/3 - 30})
-		.attr('y', function() { return height*2/3 + 30})
+		.attr('x', function() { return width / 3 - 30})
+		.attr('y', function() { return height * 2 / 3 + 30})
 		.style('opacity', '0')
 		.text(function(d,i) { 
 			information = 'On the ' + informationDay(d) + 'th of ' + 
-			informationMonth(d) + ' it was ' + 
+			informationMonth(d) + ' 2017';
+			return information; 
+		})
+	rect.append('text')
+		.attr('class', 'calendarLegenda')
+		.attr('id', function(d,i) { return 'calendarLegenda' + i; })
+		.attr('x', function() { return width / 3 - 30})
+		.attr('y', function() { return height * 2 / 3 + 50})
+		.style('opacity', '0')
+		.text(function(d,i) { 
+			information = ' it was ' + 
 			dataWeather[i][stateName] + ' degrees celcius';
 			return information; 
-		});
+		});;
 		
 	// title the months
     const month_titles = svg.selectAll('.month-title')  
@@ -476,12 +487,14 @@ function ClickedState(stateName) {
 * Re-colour the calendar for a new state.
 **/
 function UpdateCalendar(stateName) {
-	// get the colour scale and date formats
+	// get the colour scale, date formats and size
 	const colourScale = d3.scaleLinear()
 		.domain([-30, 0, 50])
 		.range(['#007CC4', '#F7F7F7', '#E84302']),
 		informationDay = d3.timeFormat('%d'),
-		informationMonth = d3.timeFormat('%B');
+		informationMonth = d3.timeFormat('%B'),
+		height = document.getElementById('outerCalendar').getAttribute('height'),
+		width = document.getElementById('outerCalendar').getAttribute('width');
 		
 	// re-colour each day rect
 	const temp = d3.selectAll('.day')
@@ -492,19 +505,29 @@ function UpdateCalendar(stateName) {
 	// remove the tooltip and make a new one
 	d3.selectAll('.calendarLegenda').remove();
 	
-	d3.selectAll('.calendarSVG')
-		.append('text')
-			.attr('class', 'calendarLegenda')
-			.attr('id', function(d,i) { return 'calendarLegenda' + i; })
-			.attr('x', '300')
-			.attr('y', '300')
-			.style('opacity', '0')
-			.text(function(d,i) { 
-				information = 'On the ' + informationDay(d) + 'th of ' + 
-				informationMonth(d) + ' the average temperature is ' + 
-				dataWeather[i][stateName] + ' degrees celcius';
-				return information; 
-			});
+	const svg = d3.selectAll('.calendarSVG')
+	svg.append('text')
+		.attr('class', 'calendarLegenda')
+		.attr('id', function(d,i) { return 'calendarLegenda' + i; })
+		.attr('x', function() { return width / 3 - 30})
+		.attr('y', function() { return height * 2 / 3 + 30})
+		.style('opacity', '0')
+		.text(function(d,i) { 
+			information = 'On the ' + informationDay(d) + 'th of ' + 
+			informationMonth(d) + ' 2017';
+			return information; 
+		})
+	svg.append('text')
+		.attr('class', 'calendarLegenda')
+		.attr('id', function(d,i) { return 'calendarLegenda' + i; })
+		.attr('x', function() { return width / 3 - 30})
+		.attr('y', function() { return height * 2 / 3 + 50})
+		.style('opacity', '0')
+		.text(function(d,i) { 
+			information = ' it was ' + 
+			dataWeather[i][stateName] + ' degrees celcius';
+			return information; 
+		});
 }
 
 /**
