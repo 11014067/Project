@@ -1,6 +1,8 @@
 # Moving day 
 ## Site
-Sanne Oud(11014067): https://11014067.github.io/Project/index.html
+Sanne Oud(11014067): 
+The site: https://11014067.github.io/Project/index.html
+A video about how to use the site: https://youtu.be/tIDCyUH8YFg
 
 ![](doc/site1.png)
 ![](doc/site2.png)
