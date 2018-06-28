@@ -33,12 +33,12 @@ function LoadData() {
 	
 	// load the datafiles and afterword check the data
 	queue()
-		.defer(d3.csv, "data/progproj_GDP.csv")
-		.defer(d3.csv, "data/progproj_income.csv")
-		.defer(d3.csv, "data/progproj_indices.csv")
-		.defer(d3.csv, "data/progproj_population.csv")
-		.defer(d3.csv, "data/progproj_States.csv")
-		.defer(d3.csv, "data/progproj_Weather.csv")
+		.defer(d3.csv, 'data/progproj_GDP.csv')
+		.defer(d3.csv, 'data/progproj_income.csv')
+		.defer(d3.csv, 'data/progproj_indices.csv')
+		.defer(d3.csv, 'data/progproj_population.csv')
+		.defer(d3.csv, 'data/progproj_States.csv')
+		.defer(d3.csv, 'data/progproj_Weather.csv')
 		.await(CheckData);
 }
 
@@ -53,35 +53,35 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 	
 	// make the strings into variables
 	ppGDP.forEach( function(d) {
-		d["2011"] = +d["2011"] 
-		d["2012"] = +d["2012"] 
-		d["2013"] = +d["2013"]
-		d["2014"] = +d["2014"]
-		d["2015"] = +d["2015"]
+		d['2011'] = +d['2011'] 
+		d['2012'] = +d['2012'] 
+		d['2013'] = +d['2013']
+		d['2014'] = +d['2014']
+		d['2015'] = +d['2015']
 	});
 	ppPopulation.forEach( function(d) {
-		d["2010"] = +d["2010"] 
-		d["2011"] = +d["2011"] 
-		d["2012"] = +d["2012"] 
-		d["2013"] = +d["2013"]
-		d["2014"] = +d["2014"]
-		d["2015"] = +d["2015"]
-		d["2016"] = +d["2016"]
+		d['2010'] = +d['2010'] 
+		d['2011'] = +d['2011'] 
+		d['2012'] = +d['2012'] 
+		d['2013'] = +d['2013']
+		d['2014'] = +d['2014']
+		d['2015'] = +d['2015']
+		d['2016'] = +d['2016']
 	});
 	ppIncome.forEach( function(d) {
-		d["2011"] = +d["2011"] 
-		d["2012"] = +d["2012"] 
-		d["2013"] = +d["2013"]
-		d["2014"] = +d["2014"]
-		d["2015"] = +d["2015"]
+		d['2011'] = +d['2011'] 
+		d['2012'] = +d['2012'] 
+		d['2013'] = +d['2013']
+		d['2014'] = +d['2014']
+		d['2015'] = +d['2015']
 	});
-	ppIndices.forEach( function (d) {
+	ppIndices.forEach( function(d) {
 		d.Index = +d.Index
 		d.Grocery = +d.Grocery
 		d.Housing = +d.Housing
 		d.Utilities = +d.Utilities
 	});
-	ppStates.forEach( function(d){
+	ppStates.forEach( function(d) {
 		d.IdentificationNumber = +d.IdentificationNumber
 	});
 	
@@ -95,8 +95,8 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 	
 	// start drawing the site
 	DrawMap(dataPopulation);
-	DrawCalander("Alaska");
-	DrawBarGraph("Alaska");
+	DrawCalendar('Alaska');
+	DrawBarGraph('Alaska');
 }
 
 /**
@@ -105,66 +105,66 @@ function CheckData(error, ppGDP, ppIncome, ppIndices, ppPopulation, ppStates, pp
 function DrawMap(shownData) {
 	
 	// get the year and svg size
-	const year = "2015";
-	const width = 950;
-	const height = 650;
+	const year = '2015',
+		width = 950,
+		height = 650;
 	
 	// start the svg
-	const svg = d3.select("#USMap")
-		.append("svg")
-		.attr("width", width)
-		.attr("height", height);
+	const svg = d3.select('#USMap')
+		.append('svg')
+		.attr('width', width)
+		.attr('height', height);
 		
 	// make a path for the map
 	const path = d3.geoPath();
 
 	// get the colour scale with a lower minimum to fit all the years
 	const colour = d3.scaleLinear()
-		.domain([d3.min(shownData, function (d, i) { 
-			return (Math.round(shownData[i][year]/1000)*1000)/1.5; 
+		.domain([d3.min(shownData, function(d, i) { 
+			return (Math.round(shownData[i][year] / 1000) * 1000) / 1.5; 
 			}), 
-			d3.max(shownData, function (d, i) { 
-				return Math.round(shownData[i][year]/1000)*1000; 
+			d3.max(shownData, function(d, i) { 
+				return Math.round(shownData[i][year] / 1000) * 1000; 
 			})
 		])
-		.range(["#D5E2EF", "#08519C"]);
+		.range(['#D5E2EF', '#08519C']);
 	
 	// get the US map data
-	d3.json("https://d3js.org/us-10m.v1.json", function(error, USStates) {
+	d3.json('https://d3js.org/us-10m.v1.json', function(error, USStates) {
 		if (error) throw error;
 		
 		// make the states and colour them according to the data
-		svg.append("g")
-			.attr("class", "states")
-			.selectAll("path")
+		svg.append('g')
+			.attr('class', 'states')
+			.selectAll('path')
 			.data(topojson.feature(USStates, USStates.objects.states).features)
 			.enter()
-				.append("path")
-				.attr("d", path)
-				.attr("id", function(d) {
-					let IDName = "NULL";
-					for (i=0; i<dataStates.length; i++) { 
+				.append('path')
+				.attr('d', path)
+				.attr('id', function(d) {
+					let IDName = 'NULL';
+					for (i = 0; i < dataStates.length; i++) { 
 						if (d.id == dataStates[i].StateNumber) {
 							IDName = dataStates[i].StateName;
 						}
 					}
 					return IDName;
 				})
-				.style("fill", function(d) {
-					for (i=0; i<shownData.length; i++) {
+				.style('fill', function(d) {
+					for (i = 0; i < shownData.length; i++) {
 						if (this.id == shownData[i].StateName) {
 							return colour(shownData[i][year]);
 						}
 					}
-					return "rbg(80, 80, 80)"; 
+					return 'rbg(80, 80, 80)'; 
 				})
-				.on("click", function() {
-					clickedState(this.id);
+				.on('click', function() {
+					ClickedState(this.id);
 				})
 				.on('mouseover', function(d){
 					let name = this.id;
 					document.getElementById('stateName').innerHTML=name;
-					for (i=0; i<shownData.length; i++) {
+					for (i = 0; i < shownData.length; i++) {
 						if (name == shownData[i].StateName) {
 							return document.getElementById('stateData')
 								.innerHTML=(shownData[i][year]);
@@ -173,9 +173,9 @@ function DrawMap(shownData) {
 				});
 				
 		// append the borders with the path		
-		svg.append("path")
-			.attr("class", "state-borders")
-			.attr("d", path(topojson.mesh(USStates, USStates.objects.states, 
+		svg.append('path')
+			.attr('class', 'state-borders')
+			.attr('d', path(topojson.mesh(USStates, USStates.objects.states, 
 				function(a, b) { return a !== b; })));
 	});
 	
@@ -185,29 +185,28 @@ function DrawMap(shownData) {
 	
 	if (shownData == dataPopulation) {
 		document.getElementById('stateInfo')
-			.innerHTML=("had a population of");
+			.innerHTML=('had a population of');
 	}
 	else if (shownData == dataIncome) {
 		document.getElementById('stateInfo')
-			.innerHTML=("had an average income of");
+			.innerHTML=('had an average income of');
 	}
 	else {
 		document.getElementById('stateInfo')
-			.innerHTML=("had a GDP of");
+			.innerHTML=('had a GDP of');
 	}
 	
 	document.getElementById('stateData')
 		.innerHTML=(shownData[1][year]);
 	
 	document.getElementById('stateYear')
-		.innerHTML=("in " + year);
-		
+		.innerHTML=('in ' + year);
 }
 
 /**
 * Draw the calendar for any state.
 **/
-function DrawCalander(stateName){
+function DrawCalendar(stateName){
 	
 	// get all the sizes
 	const width = 900,
@@ -219,93 +218,93 @@ function DrawCalander(stateName){
 	// make a colour scale
 	const colourScale = d3.scaleLinear()
 		.domain([-30, 0, 50])
-		.range(["#007CC4", "#F7F7F7", "#E84302"]);
+		.range(['#007CC4', '#F7F7F7', '#E84302']);
 	
 	// get the months in the year and the necessery date formats
-	const day = d3.timeFormat("%w"), 
-        week = d3.timeFormat("%U"), 
-        month = d3.timeFormat("%m"), 
-        year = d3.timeFormat("%Y"),
-		informationDay = d3.timeFormat("%d"),
-		informationMonth = d3.timeFormat("%B");
+	const day = d3.timeFormat('%w'), 
+        week = d3.timeFormat('%U'), 
+        month = d3.timeFormat('%m'), 
+        year = d3.timeFormat('%Y'),
+		informationDay = d3.timeFormat('%d'),
+		informationMonth = d3.timeFormat('%B');
 		
 	// make a svg
-    const svg = d3.select("#Calander").selectAll("svg")
+    const svg = d3.select('#calendar').selectAll('svg')
         .data(d3.range(2017, 2018))
-		.enter().append("svg")
-			.attr("width", width)
-			.attr("height", height)
-		.append("g");
+		.enter().append('svg')
+			.attr('width', width)
+			.attr('height', height)
+		.append('g');
 
-	// make a "g" for every day
-    const rect = svg.selectAll(".day")
+	// make a 'g' for every day
+    const rect = svg.selectAll('.day')
         .data(function(d) { 
           return d3.timeDays(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
 		.enter()
-		.append("g")
-			.attr("class", "calendarSVG");
+		.append('g')
+			.attr('class', 'calendarSVG');
 	
 	// make a square for every day
-	rect.append("rect")
-		.attr("class", "day")
-		.attr("id", function(d,i) { return i; })
-		.attr("width", cellSize)
-		.attr("height", cellSize)
-		.attr("x", function(d) {
+	rect.append('rect')
+		.attr('class', 'day')
+		.attr('id', function(d,i) { return i; })
+		.attr('width', cellSize)
+		.attr('height', cellSize)
+		.attr('x', function(d) {
 			let month_padding = 1.2 * cellSize* 7 * 
-				((month(d)-1) % (no_months_in_a_row));
+				((month(d) - 1) % (no_months_in_a_row));
 			return day(d) * cellSize + month_padding; 
 		})
-		.attr("y", function(d) { 
+		.attr('y', function(d) { 
 			let week_diff = week(d) - 
-				week(new Date(year(d), month(d) - 1, 1) );
-			let rowNum = Math.ceil(month(d) / (no_months_in_a_row));
+				week(new Date(year(d), month(d) - 1, 1) ),
+				rowNum = Math.ceil(month(d) / (no_months_in_a_row));
 			return (week_diff * cellSize) + 
 				rowNum * cellSize * 8 - cellSize / 2 - shift_up;
 		})
-		.style("fill", function(d,i) { 
+		.style('fill', function(d,i) { 
 			return colourScale(dataWeather[i][stateName])
 		})
-		.on("mouseover", function(d, i) { 
-			d3.selectAll(".calendarLegenda").style("opacity", "0");
-			d3.select("#calendarLegenda" + i).style("opacity", "1");
+		.on('mouseover', function(d, i) { 
+			d3.selectAll('.calendarLegenda').style('opacity', '0');
+			d3.select('#calendarLegenda' + i).style('opacity', '1');
 		});
 	
 	// make a tooltip
-	rect.append("text")
-		.attr("class", "calendarLegenda")
-		.attr("id", function(d,i) { return "calendarLegenda" + i; })
-		.attr("x", function() { return width/3 - 30})
-		.attr("y", function() { return height*2/3 + 30})
-		.style("opacity", "0")
+	rect.append('text')
+		.attr('class', 'calendarLegenda')
+		.attr('id', function(d,i) { return 'calendarLegenda' + i; })
+		.attr('x', function() { return width/3 - 30})
+		.attr('y', function() { return height*2/3 + 30})
+		.style('opacity', '0')
 		.text(function(d,i) { 
-			information = "On the " + informationDay(d) + "th of " + 
-			informationMonth(d) + " it was " + 
-			dataWeather[i][stateName] + " degrees celcius";
+			information = 'On the ' + informationDay(d) + 'th of ' + 
+			informationMonth(d) + ' it was ' + 
+			dataWeather[i][stateName] + ' degrees celcius';
 			return information; 
 		});
 		
 	// title the months
-    const month_titles = svg.selectAll(".month-title")  
+    const month_titles = svg.selectAll('.month-title')  
         .data(function(d) { 
 			return d3.timeMonths(new Date(d, 0, 1), new Date(d + 1, 0, 1)); 
 			})
-		.enter().append("text")
+		.enter().append('text')
 			.text(function(d,i) { return informationMonth(d); })
-			.attr("x", function(d, i) {
+			.attr('x', function(d, i) {
 				let month_padding = 1.2 * cellSize* 7 * 
 					((month(d)-1) % (no_months_in_a_row));
 				return month_padding;
 			})
-			.attr("y", function(d, i) {
+			.attr('y', function(d, i) {
 				let week_diff = week(d) - 
-					week(new Date(year(d), month(d)-1, 1) );
-				let row_level = Math.ceil(month(d) / (no_months_in_a_row));
+					week(new Date(year(d), month(d)-1, 1) ),
+					row_level = Math.ceil(month(d) / (no_months_in_a_row));
 				return (week_diff*cellSize) + row_level * cellSize * 8 
 					- cellSize - shift_up;
 			})
-			.attr("class", "monthTitle");
+			.attr('class', 'monthTitle');
 }
 
 /**
@@ -321,11 +320,11 @@ function DrawBarGraph(stateName){
 	}
 	
 	// make a object with the data for the state
-	const DataList = ["Index", "Grocery", "Housing", "Utilities"];
-	let DataListIndex = [] ;
+	const dataList = ['Index', 'Grocery', 'Housing', 'Utilities'];
+	let dataListIndex = [] ;
 	
-	for (i=0; i<DataList.length; i++) {
-		DataListIndex.push(dataIndices[stateNumber][DataList[i]]);
+	for (i=0; i<dataList.length; i++) {
+		dataListIndex.push(dataIndices[stateNumber][dataList[i]]);
 	}
 	
 	// get the svg sizes
@@ -340,14 +339,14 @@ function DrawBarGraph(stateName){
 		height = 300 - margin.top - margin.bottom;
 	
 	// make the svg
-	const svgBar = d3.select("#BarGraph")
-		.append("svg")
-		.attr("class", "outerBarSVG")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", "translate(" + margin.left + "," + 
-			margin.top + ")");
+	const svgBar = d3.select('#barGraph')
+		.append('svg')
+		.attr('class', 'outerBarSVG')
+        .attr('width', width + margin.left + margin.right)
+        .attr('height', height + margin.top + margin.bottom)
+        .append('g')
+        .attr('transform', 'translate(' + margin.left + ',' + 
+			margin.top + ')');
 
 	// make the x and y scale and y axis
     const x = d3.scaleLinear()
@@ -356,33 +355,33 @@ function DrawBarGraph(stateName){
 
     const y = d3.scaleOrdinal()
 		.range([0, (height / 4), (height/ 2), (height * 3 / 4)])
-		.domain(DataList);
+		.domain(dataList);
 
     const yAxis = d3.axisLeft(y);
 
-    svgBar.append("g")
-        .attr("class", "y axis")
+    svgBar.append('g')
+        .attr('class', 'y axis')
         .call(yAxis);
 			
 	// make the bars with labels
-    const bars = svgBar.selectAll(".bar")
-        .data(DataListIndex)
+    const bars = svgBar.selectAll('.bar')
+        .data(dataListIndex)
         .enter()
-        .append("g").attr("class", "Bar");
+        .append('g').attr('class', 'Bar');
 
-    bars.append("rect")
-        .attr("class", "bar")
-        .attr("y", function (d, i) { return y(DataList[i]); })
-        .attr("height", function(d) { 
-			return (height/DataList.length) - margin.bottom; 
+    bars.append('rect')
+        .attr('class', 'bar')
+        .attr('y', function(d, i) { return y(dataList[i]); })
+        .attr('height', function(d) { 
+			return (height/dataList.length) - margin.bottom; 
 		})
-        .attr("x", 0)
-        .attr("width", function (d) { return x(d); });
+        .attr('x', 0)
+        .attr('width', function(d) { return x(d); });
 
-    bars.append("text")
-        .attr("class", "label")
-        .attr("y", function (d, i) { return y(DataList[i]) + 20; })
-		.attr("x", function (d) { return x(d) - 10; })
+    bars.append('text')
+        .attr('class', 'label')
+        .attr('y', function(d, i) { return y(dataList[i]) + 20; })
+		.attr('x', function(d) { return x(d) - 10; })
 		.text(function(d) { return d; });
  
 }
@@ -390,48 +389,48 @@ function DrawBarGraph(stateName){
 /**
 * Update the map for year or shown value.
 **/
-function updateMap() {
+function UpdateMap() {
 	//get the year and dataset
-	const year = document.getElementById("dataYear").value;
-	const dataName = "data" + document.getElementById("optionBox").value;
+	const year = document.getElementById('dataYear').value,
+		dataName = 'data' + document.getElementById('optionBox').value;
 	
-	if (dataName == "dataPopulation") {
+	if (dataName == 'dataPopulation') {
 		shownData = dataPopulation;
 	}
-	else if (dataName == "dataGDP") {
+	else if (dataName == 'dataGDP') {
 		shownData = dataGDP;
 	}
-	else if (dataName == "dataIncome") {
+	else if (dataName == 'dataIncome') {
 		shownData = dataIncome;
 	}
 	
-	const standardYear = "2015";
+	const standardYear = '2015';
 	
 	// remake the colour scale to keep it the same for each year
 	const colour = d3.scaleLinear()
-		.domain([d3.min(shownData, function (d, i) { 
+		.domain([d3.min(shownData, function(d, i) { 
 				return (Math.round(shownData[i][standardYear]/1000)*1000)/1.5; 
 			}), 
-			d3.max(shownData, function (d, i) { 
+			d3.max(shownData, function(d, i) { 
 				return Math.round(shownData[i][standardYear]/1000)*1000; 
 			})
 		])
-		.range(["#D5E2EF", "#08519C"]);	
+		.range(['#D5E2EF', '#08519C']);	
 	
 	// re-colour the states and update the tooltip
 	const temp = d3.selectAll('path')
-		.style("fill", function(d, i){
-			for (i=0; i<shownData.length; i++) {
+		.style('fill', function(d, i) {
+			for (i = 0; i < shownData.length; i++) {
 				if (this.id == shownData[i].StateName) {
 					return colour(shownData[i][year]);
 				}
 			}
-			return "rbg(80, 80, 80)"; 
+			return 'rbg(80, 80, 80)'; 
 		})
-		.on('mouseover', function(d){
+		.on('mouseover', function(d) {
 			let name = this.id;
 			document.getElementById('stateName').innerHTML=name;
-			for (i=0; i<shownData.length; i++) {
+			for (i = 0; i < shownData.length; i++) {
 				if (name == shownData[i].StateName) {
 					return document.getElementById('stateData')
 						.innerHTML=(shownData[i][year]);
@@ -441,33 +440,33 @@ function updateMap() {
 	
 	if (shownData == dataPopulation) {
 		document.getElementById('stateInfo')
-			.innerHTML=("had a population of");
+			.innerHTML=('had a population of');
 		document.getElementById('stateInfo2')
-			.innerHTML=("");
+			.innerHTML=('');
 	}
 	else if (shownData == dataIncome) {
 		document.getElementById('stateInfo')
-			.innerHTML=("had an average income of");
+			.innerHTML=('had an average income of');
 		document.getElementById('stateInfo2')
-			.innerHTML=(" dollar");
+			.innerHTML=(' dollar');
 	}
 	else {
 		document.getElementById('stateInfo')
-			.innerHTML=("had a GDP of");
+			.innerHTML=('had a GDP of');
 		document.getElementById('stateInfo2')
-			.innerHTML=(" dollar");
+			.innerHTML=(' dollar');
 	}
 	
 	document.getElementById('stateYear')
-		.innerHTML=("in " + year);
+		.innerHTML=('in ' + year);
 }
 
 /**
 * Change the calendar and bar graph if a state is selected.
 **/
-function clickedState(stateName) {
-	updateCalendar(stateName);
-	d3.selectAll(".outerBarSVG").remove();
+function ClickedState(stateName) {
+	UpdateCalendar(stateName);
+	d3.selectAll('.outerBarSVG').remove();
 	DrawBarGraph(stateName);
 	document.getElementById('graphTitle')
 		.innerHTML=stateName;
@@ -476,34 +475,34 @@ function clickedState(stateName) {
 /**
 * Re-colour the calendar for a new state.
 **/
-function updateCalendar(stateName) {
+function UpdateCalendar(stateName) {
 	// get the colour scale and date formats
 	const colourScale = d3.scaleLinear()
 		.domain([-30, 0, 50])
-		.range(["#007CC4", "#F7F7F7", "#E84302"]),
-		informationDay = d3.timeFormat("%d"),
-		informationMonth = d3.timeFormat("%B");
+		.range(['#007CC4', '#F7F7F7', '#E84302']),
+		informationDay = d3.timeFormat('%d'),
+		informationMonth = d3.timeFormat('%B');
 		
 	// re-colour each day rect
 	const temp = d3.selectAll('.day')
-		.style("fill", function(d,i) { 
+		.style('fill', function(d,i) { 
 			return colourScale(dataWeather[i][stateName])
 		});
 		
 	// remove the tooltip and make a new one
-	d3.selectAll(".calendarLegenda").remove();
+	d3.selectAll('.calendarLegenda').remove();
 	
-	d3.selectAll(".calendarSVG")
-		.append("text")
-			.attr("class", "calendarLegenda")
-			.attr("id", function(d,i) { return "calendarLegenda" + i; })
-			.attr("x", "300")
-			.attr("y", "300")
-			.style("opacity", "0")
+	d3.selectAll('.calendarSVG')
+		.append('text')
+			.attr('class', 'calendarLegenda')
+			.attr('id', function(d,i) { return 'calendarLegenda' + i; })
+			.attr('x', '300')
+			.attr('y', '300')
+			.style('opacity', '0')
 			.text(function(d,i) { 
-				information = "On the " + informationDay(d) + "th of " + 
-				informationMonth(d) + " the average temperature is " + 
-				dataWeather[i][stateName] + " degrees celcius";
+				information = 'On the ' + informationDay(d) + 'th of ' + 
+				informationMonth(d) + ' the average temperature is ' + 
+				dataWeather[i][stateName] + ' degrees celcius';
 				return information; 
 			});
 }
@@ -511,24 +510,24 @@ function updateCalendar(stateName) {
 /**
 * Show/hide the storytelling/help.
 **/
-function showStory() {
+function ShowStory() {
 	
 	// show or hide the dropdown
-	if (d3.select(".dropdownContentStory").style("display") == "none") {
-		d3.select(".dropdownContentStory").style("display", "block");
+	if (d3.select('.dropdownContentStory').style('display') == 'none') {
+		d3.select('.dropdownContentStory').style('display', 'block');
 	}
 	else {
-		d3.select(".dropdownContentStory").style("display", "none");
+		d3.select('.dropdownContentStory').style('display', 'none');
 	}
 }
 
-function showHelp() {
+function ShowHelp() {
 	
 	// show or hide the dropdown
-	if (d3.select(".dropdownContentHelp").style("display") == "none") {
-		d3.select(".dropdownContentHelp").style("display", "block");
+	if (d3.select('.dropdownContentHelp').style('display') == 'none') {
+		d3.select('.dropdownContentHelp').style('display', 'block');
 	}
 	else {
-		d3.select(".dropdownContentHelp").style("display", "none");
+		d3.select('.dropdownContentHelp').style('display', 'none');
 	}
 }

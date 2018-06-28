@@ -7,6 +7,7 @@
 * index html for the programming project.
 ***/
 
+/* text*/
 
 h1 {
 	text-align: right;
@@ -16,9 +17,16 @@ h2 {
 	display: inline;
 } 
 
-/* Map */
+span {
+	font: 16px sans-serif;
+}
 
+.sliderInfo {
+	display: flex;
+	align-items: center;
+}
 
+/* map */
 .state-borders {
 	fill: none;
 	stroke: white;
@@ -27,13 +35,22 @@ h2 {
 	stroke-linecap: round;
 }
 
-/* Calander */
+/* calendar */
+.day {
+    stroke: #aaa;
+}
+
+.month {
+    fill: none;
+    stroke: #fff;
+    stroke-width: 4px;
+}
+
 .calendarLegenda {
 	font: 16px sans-serif;
 }
 
-/* Barchart */
-
+/* barchart */
 .Bar rect {
   fill: gray;
 }
@@ -43,25 +60,3 @@ h2 {
   font: 10px sans-serif;
   text-anchor: end;
 }
-
-
-/* overig */
-
-
-      .background {
-        fill: #eee;
-      }
-
-      line {
-        stroke: #fff;
-      }
-
-      .day {
-        stroke: #ccc;
-      }
-
-      .month {
-        fill: none;
-        stroke: #fff;
-        stroke-width: 4px;
-      }

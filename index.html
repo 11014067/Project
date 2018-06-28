@@ -20,20 +20,20 @@ course: programmeer project
 	</head>
 	<body onload="LoadData();">
 		<div class="container-fluid">
-			<div class="row", id="titleAndHelp">
+			<div class="row" id="titleAndHelp">
 				<div class="col-lg-9">
 					<h1 class="title" >What American state fits you best?</h1>
 				</div>
 				<div class="col-lg-3">
 					<div class="row">
-						<button onclick="showStory();">See the story behind the visualization</button>
+						<button onclick="ShowStory();">See the story behind the visualization</button>
 					</div>
 					<div class="row">
-						<button onclick="showHelp();">HELP ME!</button>
+						<button onclick="ShowHelp();">HELP ME!</button>
 					</div>
 				</div>
 			</div>
-			<div class="row", id="infomation">
+			<div class="row" id="infomation">
 				<div class="dropdownContentStory" style="display:none"> 
 					<h4>On this site you can find data about the different states of the US.</h4>
 					<h4>This can help you decide which state fits you best if you are thinking about moving to the US.</h4>
@@ -49,41 +49,45 @@ course: programmeer project
 					<h4>If you hover over the calendar you can see the exact temperature in the bottom right.</h4>
 				</div>
 			</div>
-			<div class="row", id="map">
-				<div class="col-lg-3", id="USMapInfo">
+			<div class="row" id="map">
+				<div class="col-lg-2", id="USMapInfo">
 					<h2 id="stateName">....</h2>
 					<h3 id="stateInfo"></h3>
 					<h2 id="stateData">....</h2> 
 					<h3 id="stateInfo2"></h3>
 					<h3 id="stateYear"></h3>
 				</div>
-				<div class="col-lg-9", id="USMap"></div>
+				<div class="col-lg-10", id="USMap"></div>
 			</div>
-			<div class="row", id="mapOptions">
+			<div class="row" id="mapOptions">
 				<div class="col-lg-6">
-					<input type="range" min="2011" max="2015" value="2015" class="slider" id="dataYear" onchange="updateMap();">
+					<div class="sliderInfo">
+						<span>2011</span>
+						<input class="slider" id="dataYear" style="width:80%;" type="range" min="2011" max="2015" value="2015" onchange="UpdateMap();">
+						<span>2015</span>
+					</div>
 				</div>
-				<select class="col-lg-6" id="optionBox" onChange="updateMap()">
+				<select class="col-lg-3" id="optionBox" onChange="UpdateMap()">
 					<option onclick="dataPopulation">Population</option>
 					<option onclick="dataIncome">Income</option>
 					<option onclick="dataGDP">GDP</option>
 				</select>
 			</div>
-			<div class="row", id="stateTitle">
+			<div class="row" id="stateTitle">
 				<p><h2>&nbsp;The calendar and bar graph show information about </h2><h2 id="graphTitle">Alaska</h2></p>
 			</div>
-			<div class="row", id="stateInformation">
-				<div class="col-lg-7", id="Calander"></div>
+			<div class="row" id="stateInformation">
+				<div class="col-lg-7" id="calendar"></div>
 				<div class="col-lg-5">
 					<div class="row">
 						<h4>Here you can see how expensive living is in this state.</h4>
 						<h4>The index is 100 over the hole US.</h4>
 						<h4>If a state has a high index, then it is more expensive.</h4>
 					</div>
-					<div class="row" id="BarGraph"></div>
+					<div class="row" id="barGraph"></div>
 				</div>
 			</div>
-			<div class="row", id="Sources">
+			<div class="row" id="Sources">
 				<h4>This site has been made with data about 
 					<a href="https://www.census.gov/data/tables/2016/demo/popest/state-total.html", target="_blank">population</a>,	
 					<a href="https://www.bea.gov/iTable/iTable.cfm?reqid=70&step=10&isuri=1&7003=200&7035=-1&7004=sic&7005=1&7006=xx&7036=-1&7001=1200&7002=1&7090=70&7007=-1&7093=levels#reqid=70&step=10&isuri=1&7003=200&7004=naics&7035=-1&7005=1&7006=xx&7001=1200&7036=-1&7002=1&7090=70&7007=-1&7093=levels", target="_blank">GDP</a>, 
