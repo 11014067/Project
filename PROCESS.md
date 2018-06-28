@@ -55,3 +55,5 @@ Making buttons for storytelling and help and starting the map tooltip before hov
 
 # Day 19 (28-6)
 Making all the .md files and cleaning up code with the style guide.
+I tried multiple times in the last week to add legends, so decided to add my old ones from data but they didnt show up eventhough they where in my html when I inspected.
+So I decided to decided to delete it again.
